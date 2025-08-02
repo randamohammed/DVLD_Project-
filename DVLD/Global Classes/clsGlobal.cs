@@ -1,4 +1,5 @@
-﻿using SLDVLD_Buisness;
+﻿using Microsoft.Win32;
+using SLDVLD_Buisness;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -6,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Microsoft.Win32;
 
 namespace DVLDSluotion
 {
@@ -15,12 +17,12 @@ namespace DVLDSluotion
 
         public static bool RememberUsernameAndPassword(string UserName,string Password)
         {
-           try
-           {
-                string CurrentDirectory =System.IO. Directory.GetCurrentDirectory();
-                string filePath = CurrentDirectory + "\\date.txt";
+            try
+            {
+                string PathKey = @"HKEY_CURRENT_USER\SOFTWARE\UserDate";
+                string filePath = "DVLuserData";
 
-                if(UserName ==""&& File.Exists(filePath))
+                if (UserName == "" && File.Exists(filePath))
                 {
                     File.Delete(filePath);
                     return true;
@@ -28,12 +30,9 @@ namespace DVLDSluotion
 
                 string DateSave = UserName + "#//#" + Password;
 
-                using(StreamWriter writer = new StreamWriter(filePath))
-                {
-                    writer.WriteLine(DateSave);
-                    return true;
-                }
-           }
+                Registry.SetValue(PathKey, filePath, DateSave);
+                return true;
+            }
             catch (Exception ex)
             {
                 MessageBox.Show($"An error occurred: {ex.Message}");
@@ -44,18 +43,14 @@ namespace DVLDSluotion
         public static bool GetStoredCredentil(ref string UserName, ref string Password)
         {
 
-            string CurrentDirectory =System.IO.Directory.GetCurrentDirectory();
-            string Pathfil = CurrentDirectory + "\\date.txt";
-
+            string PathKey = @"HKEY_CURRENT_USER\SOFTWARE\UserDate";
+            string filePath = "DVLuserData";
             try
             {
-                if (File.Exists(Pathfil))
-                {
-                    using (StreamReader reader = new StreamReader(Pathfil))
-                    {
-                        string Line;
+              
+                   string Line = Registry.GetValue(PathKey, filePath,null) as string;
 
-                        while ((Line = reader.ReadLine()) != null)
+                        while (Line  != null)
                         {
 
                             Console.WriteLine(Line);
@@ -66,8 +61,7 @@ namespace DVLDSluotion
                            
                         }
                         return true;
-                    }
-                }
+                   
             }
             catch (Exception ex)
             { 
