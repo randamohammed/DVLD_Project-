@@ -31,7 +31,10 @@
             this.components = new System.ComponentModel.Container();
             this.tbUsrInfo = new System.Windows.Forms.TabControl();
             this.tpPersonINfo = new System.Windows.Forms.TabPage();
+            this.btnPersonInfoNext = new System.Windows.Forms.Button();
+            this.ctrlPersonCardWithFiltere1 = new DVLDSluotion.CtrlPersonCardWithFiltere();
             this.tpLoginInfo = new System.Windows.Forms.TabPage();
+            this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.lblUserID = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.chkIsActive = new System.Windows.Forms.CheckBox();
@@ -41,24 +44,21 @@
             this.label3 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.txtPassword = new System.Windows.Forms.TextBox();
-            this.lbTitel = new System.Windows.Forms.Label();
-            this.errorProvider1 = new System.Windows.Forms.ErrorProvider(this.components);
-            this.ctrlPersonCardWithFiltere1 = new DVLDSluotion.CtrlPersonCardWithFiltere();
-            this.btClose = new System.Windows.Forms.Button();
-            this.btSave = new System.Windows.Forms.Button();
-            this.btnPersonInfoNext = new System.Windows.Forms.Button();
-            this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.pictureBox8 = new System.Windows.Forms.PictureBox();
             this.pictureBox3 = new System.Windows.Forms.PictureBox();
+            this.lbTitel = new System.Windows.Forms.Label();
+            this.errorProvider1 = new System.Windows.Forms.ErrorProvider(this.components);
+            this.btClose = new System.Windows.Forms.Button();
+            this.btSave = new System.Windows.Forms.Button();
             this.tbUsrInfo.SuspendLayout();
             this.tpPersonINfo.SuspendLayout();
             this.tpLoginInfo.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.errorProvider1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox8)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.errorProvider1)).BeginInit();
             this.SuspendLayout();
             // 
             // tbUsrInfo
@@ -84,6 +84,32 @@
             this.tpPersonINfo.Text = "Person Info";
             this.tpPersonINfo.UseVisualStyleBackColor = true;
             // 
+            // btnPersonInfoNext
+            // 
+            this.btnPersonInfoNext.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnPersonInfoNext.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnPersonInfoNext.Image = global::DVLDSluotion.Properties.Resources.Next_32;
+            this.btnPersonInfoNext.ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.btnPersonInfoNext.Location = new System.Drawing.Point(722, 351);
+            this.btnPersonInfoNext.Name = "btnPersonInfoNext";
+            this.btnPersonInfoNext.Size = new System.Drawing.Size(88, 39);
+            this.btnPersonInfoNext.TabIndex = 2;
+            this.btnPersonInfoNext.Text = "Nxet";
+            this.btnPersonInfoNext.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btnPersonInfoNext.UseVisualStyleBackColor = true;
+            this.btnPersonInfoNext.Click += new System.EventHandler(this.btnPersonInfoNext_Click);
+            // 
+            // ctrlPersonCardWithFiltere1
+            // 
+            this.ctrlPersonCardWithFiltere1.FilterEnable = true;
+            this.ctrlPersonCardWithFiltere1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.ctrlPersonCardWithFiltere1.Location = new System.Drawing.Point(7, 8);
+            this.ctrlPersonCardWithFiltere1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.ctrlPersonCardWithFiltere1.Name = "ctrlPersonCardWithFiltere1";
+            this.ctrlPersonCardWithFiltere1.Size = new System.Drawing.Size(837, 335);
+            this.ctrlPersonCardWithFiltere1.TabIndex = 3;
+            this.ctrlPersonCardWithFiltere1.TexFulterFouce = true;
+            // 
             // tpLoginInfo
             // 
             this.tpLoginInfo.Controls.Add(this.pictureBox2);
@@ -106,6 +132,16 @@
             this.tpLoginInfo.TabIndex = 1;
             this.tpLoginInfo.Text = "Login Info";
             this.tpLoginInfo.UseVisualStyleBackColor = true;
+            // 
+            // pictureBox2
+            // 
+            this.pictureBox2.Image = global::DVLDSluotion.Properties.Resources.Number_32;
+            this.pictureBox2.Location = new System.Drawing.Point(185, 58);
+            this.pictureBox2.Name = "pictureBox2";
+            this.pictureBox2.Size = new System.Drawing.Size(31, 26);
+            this.pictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pictureBox2.TabIndex = 143;
+            this.pictureBox2.TabStop = false;
             // 
             // lblUserID
             // 
@@ -160,7 +196,7 @@
             this.txtConfirmPassword.PasswordChar = '*';
             this.txtConfirmPassword.Size = new System.Drawing.Size(167, 26);
             this.txtConfirmPassword.TabIndex = 137;
-            this.txtConfirmPassword.Validating += new System.ComponentModel.CancelEventHandler(this.ValidaingAllText);
+            this.txtConfirmPassword.Validating += new System.ComponentModel.CancelEventHandler(this.txtConfirmPassword_Validating);
             // 
             // label1
             // 
@@ -206,86 +242,6 @@
             this.txtPassword.TabIndex = 132;
             this.txtPassword.Validating += new System.ComponentModel.CancelEventHandler(this.ValidaingAllText);
             // 
-            // lbTitel
-            // 
-            this.lbTitel.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lbTitel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-            this.lbTitel.Location = new System.Drawing.Point(8, 9);
-            this.lbTitel.Name = "lbTitel";
-            this.lbTitel.Size = new System.Drawing.Size(850, 23);
-            this.lbTitel.TabIndex = 3;
-            this.lbTitel.Text = "Add New User";
-            this.lbTitel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // errorProvider1
-            // 
-            this.errorProvider1.ContainerControl = this;
-            // 
-            // ctrlPersonCardWithFiltere1
-            // 
-            this.ctrlPersonCardWithFiltere1.FilterEnable = true;
-            this.ctrlPersonCardWithFiltere1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.ctrlPersonCardWithFiltere1.Location = new System.Drawing.Point(7, 8);
-            this.ctrlPersonCardWithFiltere1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.ctrlPersonCardWithFiltere1.Name = "ctrlPersonCardWithFiltere1";
-            this.ctrlPersonCardWithFiltere1.Size = new System.Drawing.Size(837, 335);
-            this.ctrlPersonCardWithFiltere1.TabIndex = 3;
-            this.ctrlPersonCardWithFiltere1.TexFulterFouce = true;
-            // 
-            // btClose
-            // 
-            this.btClose.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btClose.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btClose.Image = global::DVLDSluotion.Properties.Resources.cross_32;
-            this.btClose.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btClose.Location = new System.Drawing.Point(307, 486);
-            this.btClose.Name = "btClose";
-            this.btClose.Size = new System.Drawing.Size(95, 34);
-            this.btClose.TabIndex = 2;
-            this.btClose.Text = "Close";
-            this.btClose.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.btClose.UseVisualStyleBackColor = true;
-            // 
-            // btSave
-            // 
-            this.btSave.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btSave.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btSave.Image = global::DVLDSluotion.Properties.Resources.Save_32;
-            this.btSave.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btSave.Location = new System.Drawing.Point(685, 486);
-            this.btSave.Name = "btSave";
-            this.btSave.Size = new System.Drawing.Size(95, 34);
-            this.btSave.TabIndex = 1;
-            this.btSave.Text = "Save";
-            this.btSave.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.btSave.UseVisualStyleBackColor = true;
-            this.btSave.Click += new System.EventHandler(this.btSave_Click);
-            // 
-            // btnPersonInfoNext
-            // 
-            this.btnPersonInfoNext.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnPersonInfoNext.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnPersonInfoNext.Image = global::DVLDSluotion.Properties.Resources.Next_32;
-            this.btnPersonInfoNext.ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.btnPersonInfoNext.Location = new System.Drawing.Point(722, 351);
-            this.btnPersonInfoNext.Name = "btnPersonInfoNext";
-            this.btnPersonInfoNext.Size = new System.Drawing.Size(88, 39);
-            this.btnPersonInfoNext.TabIndex = 2;
-            this.btnPersonInfoNext.Text = "Nxet";
-            this.btnPersonInfoNext.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnPersonInfoNext.UseVisualStyleBackColor = true;
-            this.btnPersonInfoNext.Click += new System.EventHandler(this.btnPersonInfoNext_Click);
-            // 
-            // pictureBox2
-            // 
-            this.pictureBox2.Image = global::DVLDSluotion.Properties.Resources.Number_32;
-            this.pictureBox2.Location = new System.Drawing.Point(185, 58);
-            this.pictureBox2.Name = "pictureBox2";
-            this.pictureBox2.Size = new System.Drawing.Size(31, 26);
-            this.pictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.pictureBox2.TabIndex = 143;
-            this.pictureBox2.TabStop = false;
-            // 
             // pictureBox1
             // 
             this.pictureBox1.Image = global::DVLDSluotion.Properties.Resources.Password_321;
@@ -316,6 +272,51 @@
             this.pictureBox3.TabIndex = 135;
             this.pictureBox3.TabStop = false;
             // 
+            // lbTitel
+            // 
+            this.lbTitel.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lbTitel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+            this.lbTitel.Location = new System.Drawing.Point(8, 9);
+            this.lbTitel.Name = "lbTitel";
+            this.lbTitel.Size = new System.Drawing.Size(850, 23);
+            this.lbTitel.TabIndex = 3;
+            this.lbTitel.Text = "Add New User";
+            this.lbTitel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // errorProvider1
+            // 
+            this.errorProvider1.ContainerControl = this;
+            // 
+            // btClose
+            // 
+            this.btClose.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btClose.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btClose.Image = global::DVLDSluotion.Properties.Resources.cross_32;
+            this.btClose.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btClose.Location = new System.Drawing.Point(307, 486);
+            this.btClose.Name = "btClose";
+            this.btClose.Size = new System.Drawing.Size(95, 34);
+            this.btClose.TabIndex = 2;
+            this.btClose.Text = "Close";
+            this.btClose.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.btClose.UseVisualStyleBackColor = true;
+            this.btClose.Click += new System.EventHandler(this.btClose_Click);
+            // 
+            // btSave
+            // 
+            this.btSave.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btSave.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btSave.Image = global::DVLDSluotion.Properties.Resources.Save_32;
+            this.btSave.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btSave.Location = new System.Drawing.Point(685, 486);
+            this.btSave.Name = "btSave";
+            this.btSave.Size = new System.Drawing.Size(95, 34);
+            this.btSave.TabIndex = 1;
+            this.btSave.Text = "Save";
+            this.btSave.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.btSave.UseVisualStyleBackColor = true;
+            this.btSave.Click += new System.EventHandler(this.btSave_Click);
+            // 
             // fromAddUpdateUser
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -334,11 +335,11 @@
             this.tpPersonINfo.ResumeLayout(false);
             this.tpLoginInfo.ResumeLayout(false);
             this.tpLoginInfo.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.errorProvider1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox8)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.errorProvider1)).EndInit();
             this.ResumeLayout(false);
 
         }

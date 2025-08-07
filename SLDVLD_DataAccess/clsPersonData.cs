@@ -121,67 +121,71 @@ namespace SLDVLD_DataAccess
             return rowffected > 0;
         }
 
-        public static bool FindPersonByID(int PersonID,ref string NationalNo,ref string FirstName,ref string SecondName,ref string ThirdName,ref string LastName,ref DateTime DateOfBirth,
-          ref  string ImagePath,ref string Email,ref string Address,ref string Phone,ref int NationalityCountryID,ref short Gendor)
+        public static bool FindPersonByID(int PersonID, ref string NationalNo, ref string FirstName, ref string SecondName, ref string ThirdName, ref string LastName, ref DateTime DateOfBirth,
+          ref string ImagePath, ref string Email, ref string Address, ref string Phone, ref int NationalityCountryID, ref short Gendor)
         {
-            SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConntaionString);
-            string Qurey = "Select * from People Where PersonID =@PersonID";
 
-            SqlCommand command = new SqlCommand(Qurey, connection);
-            command.Parameters.AddWithValue("@PersonID", PersonID);
-
-            bool ISFound = false;
-
-            try
+            using (SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConntaionString))
             {
-                connection.Open();
 
-                SqlDataReader reader = command.ExecuteReader();
-                if(reader.Read())
+
+                using (SqlCommand command = new SqlCommand("SP_FindPersonByID", connection))
                 {
-                    ISFound = true;
-                    NationalNo = (string)reader["NationalNo"];
-                    FirstName = (string)reader["FirstName"];
-                    SecondName = (string)reader["SecondName"];
-                    Address = (string)reader["Address"];
-                    LastName = (string)reader["LastName"];
-                    Phone = (string)reader["Phone"];
-                    DateOfBirth = Convert.ToDateTime(reader["DateOfBirth"]);
-                    NationalityCountryID = (int)reader["NationalityCountryID"];
-                    Gendor = Convert.ToInt16(reader["Gendor"]);
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.AddWithValue("@PersonID", PersonID);
 
-                    if (reader["ImagePath"] != System.DBNull.Value)
-                        ImagePath = (string)reader["ImagePath"];
-                    else
-                        ImagePath = "";
+                    bool ISFound = false;
+
+                    try
+                    {
+                        connection.Open();
+
+                       
+                        SqlDataReader reader = command.ExecuteReader();
+                        if (reader.Read())
+                        {
+                            ISFound = true;
+                            NationalNo = (string)reader["NationalNo"];
+                            FirstName = (string)reader["FirstName"];
+                            SecondName = (string)reader["SecondName"];
+                            Address = (string)reader["Address"];
+                            LastName = (string)reader["LastName"];
+                            Phone = (string)reader["Phone"];
+                            DateOfBirth = Convert.ToDateTime(reader["DateOfBirth"]);
+                            NationalityCountryID = (int)reader["NationalityCountryID"];
+                            Gendor = Convert.ToInt16(reader["Gendor"]);
+
+                            if (reader["ImagePath"] != System.DBNull.Value)
+                                ImagePath = (string)reader["ImagePath"];
+                            else
+                                ImagePath = "";
 
 
-                    if (reader["Email"] != System.DBNull.Value)
-                        Email = (string)reader["Email"];
-                    else
-                        Email = "";
+                            if (reader["Email"] != System.DBNull.Value)
+                                Email = (string)reader["Email"];
+                            else
+                                Email = "";
 
 
-                    if (reader["ThirdName"] != System.DBNull.Value)
-                        ThirdName = (string)reader["ThirdName"];
-                    else
-                        ThirdName = "";
+                            if (reader["ThirdName"] != System.DBNull.Value)
+                                ThirdName = (string)reader["ThirdName"];
+                            else
+                                ThirdName = "";
+                        }
+                        else
+                        {
+                            ISFound = false;
+                        }
+                        reader.Close();
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine(ex.Message);
+                       
+                    }
+                    return ISFound;
                 }
-                else
-                {
-                    ISFound = false;
-                }
-                reader.Close();
             }
-            catch(Exception ex)
-            {
-
-            }
-            finally
-            {
-                connection.Close();
-            }
-            return ISFound;
         }
 
 

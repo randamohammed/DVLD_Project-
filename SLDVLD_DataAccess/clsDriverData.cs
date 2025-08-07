@@ -74,33 +74,37 @@ namespace SLDVLD_DataAccess
             return ISFound;
         }
 
-        public static DataTable GetAllDrivers()
+        public static async Task<DataTable> GetAllDrivers()
         {
             DataTable table = new DataTable();
-            SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConntaionString);
 
-            string Query = @"select * from Drivers_View order by FullName";
-
-            SqlCommand command = new SqlCommand(Query, connection);
-
-            try
+            return await Task.Run(() =>
             {
-                connection.Open();
-                SqlDataReader reader = command.ExecuteReader();
-                if (reader.HasRows)
-                    table.Load(reader);
+                SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConntaionString);
 
-                reader.Close();
-            }
-            catch (Exception Ex)
-            {
+                string Query = @"select * from Drivers_View order by FullName";
 
-            }
-            finally
-            {
-                connection.Close();
-            }
-            return table;
+                SqlCommand command = new SqlCommand(Query, connection);
+
+                try
+                {
+                    connection.Open();
+                    SqlDataReader reader = command.ExecuteReader();
+                    if (reader.HasRows)
+                        table.Load(reader);
+
+                    reader.Close();
+                }
+                catch (Exception Ex)
+                {
+
+                }
+                finally
+                {
+                    connection.Close();
+                }
+                return table;
+            });
         }
         public static bool UpdateDriver(int DriverID,int  PresonID,int CreatedByUserID)
         {

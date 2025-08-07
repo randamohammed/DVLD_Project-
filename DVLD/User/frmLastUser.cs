@@ -1,6 +1,7 @@
 ﻿using SLDVLD_Buisness;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
@@ -25,24 +26,26 @@ namespace DVLDSluotion
             this.Close();
         }
 
-
-        void _RefrshDefluteValuse()
+        List<UserViewModel> listuser = new List<UserViewModel>();
+        ObservableCollection<UserViewModel> ObservableCollectionusr  ;
+      
+        private    void frmLastUser_Load(object sender, EventArgs e)
         {
+
+            listuser = UserViewModel.GetAllDataUserLst();
+            ObservableCollectionusr = new ObservableCollection<UserViewModel>(listuser);
+            
             cmFilter.SelectedIndex = 0;
-            dtAllUser = clsUsers2.GetAllUsers();
-          
-            cmISActive.Visible =false;
-            txtFilterVaaluse.Visible =false; 
-            lbRecorde.Text = dvUsers.RowCount.ToString();
+            dvUsers.DataSource = ObservableCollectionusr;
+
+            _RefreashData();
         }
-        private void frmLastUser_Load(object sender, EventArgs e)
+        void _RefreashData()
         {
-             dtAllUser = clsUsers2.GetAllUsers();
-            cmFilter.SelectedIndex = 0;
-            dvUsers.DataSource = dtAllUser;
+
             lbRecorde.Text = dvUsers.RowCount.ToString();
 
-            if(dvUsers.Rows.Count > 0 )
+            if (dvUsers.Rows.Count > 0)
             {
                 dvUsers.Columns[0].HeaderText = "User ID";
                 dvUsers.Columns[0].Width = 110;
@@ -58,10 +61,9 @@ namespace DVLDSluotion
 
                 dvUsers.Columns[4].HeaderText = "IS Active";
                 dvUsers.Columns[4].Width = 120;
-               
+
             }
         }
-
         private void cmFilter_SelectedIndexChanged(object sender, EventArgs e)
         {
            
@@ -115,7 +117,7 @@ namespace DVLDSluotion
             if(CoulmnsFilter == "None"|| txtFilterVaaluse.Text =="")
             {
                 dtAllUser.DefaultView.RowFilter = "";
-                _RefrshDefluteValuse();
+                dvUsers.DataSource = ObservableCollectionusr;
                 return;
             }
 
@@ -135,7 +137,7 @@ namespace DVLDSluotion
             {
                 case "All":
                     {
-                        _RefrshDefluteValuse();
+                        dvUsers.DataSource = ObservableCollectionusr;
                         break;
                     }
                 case "Yes":
@@ -153,18 +155,51 @@ namespace DVLDSluotion
 
         private void addNewToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            frmAddUpdatePerson frm = new frmAddUpdatePerson();
+            fromAddUpdateUser frm = new fromAddUpdateUser();
+
+            frm.onUserAdded += handonuserAdded;
             frm.ShowDialog();
-            frmLastUser_Load(null, null);
+            
+        }
+
+        private void handonuserAdded(UserViewModel _user)
+        {
+
+           ObservableCollectionusr.Add(_user);
+            dvUsers.DataSource = null;
+            dvUsers.DataSource = ObservableCollectionusr;
+            _RefreashData();
         }
 
         private void editUserToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            int UserID =(int) dvUsers.CurrentRow.Cells[0].Value; 
-            fromAddUpdateUser frm = new fromAddUpdateUser(UserID);
-            frm.ShowDialog();
-            frmLastUser_Load(null,null);
+            if (dvUsers.CurrentCell != null)
+            {
+                int UserID = (int)dvUsers.CurrentRow.Cells[0].Value;
+                fromAddUpdateUser frm = new fromAddUpdateUser(UserID);
+                frm.onUserUpdated += handonuserupdeter; 
+                frm.ShowDialog();
+            
+            }
         }
+
+        private void handonuserupdeter(UserViewModel _user)
+        {
+            for (int i = 0; i <= ObservableCollectionusr.Count - 1; i++)
+            {
+                if (ObservableCollectionusr[i].UserID == _user.UserID)
+                {
+                    ObservableCollectionusr[i].UserName = _user.UserName;
+                    ObservableCollectionusr[i].IsActive = _user.IsActive;
+                    ObservableCollectionusr[i].fullName = _user.fullName;
+                    ObservableCollectionusr[i].PersonID = _user.PersonID;
+
+                    break;
+                }
+            }
+        }
+
+      
 
         private void showDetilesToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -176,15 +211,30 @@ namespace DVLDSluotion
 
         private void deleteToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            int UserID = (int)dvUsers.CurrentRow.Cells[0].Value;
-            if (MessageBox.Show("Are you you srue you wante to delete this User","Confrim Delete",MessageBoxButtons.YesNo,MessageBoxIcon.Question)==DialogResult.Yes)
+            if (dvUsers.CurrentRow == null)
             {
-                if(clsUsers2.DeleteUser(UserID))
-                {
-                    MessageBox.Show("User delete  successfully","Delet",MessageBoxButtons.OK,MessageBoxIcon.Information);
-                }
+                MessageBox.Show("Please select a user to delete.");
+                return;
             }
-            frmLastUser_Load(null,null );
+              UserViewModel  SelectUser = dvUsers.CurrentRow.DataBoundItem as UserViewModel;
+                if (MessageBox.Show("Are you you srue you wante to delete this User", "Confrim Delete", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                {
+                    if (clsUsers2.DeleteUser(SelectUser.UserID))
+                    {
+                        ObservableCollectionusr.Remove(SelectUser);
+                     dvUsers.DataSource = null;
+                     dvUsers.DataSource = ObservableCollectionusr;
+                    _RefreashData();
+                    MessageBox.Show("User delete  successfully", "Delet", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                      
+                    }
+                    else
+                    {
+                        MessageBox.Show("Could not delete user.","Not delect", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                return;
+                }
+           
         }
 
         private void chanagPasswordToolStripMenuItem_Click(object sender, EventArgs e)
@@ -204,9 +254,12 @@ namespace DVLDSluotion
         {
 
 
-            frmAddUpdatePerson frm = new frmAddUpdatePerson();
+            fromAddUpdateUser frm = new fromAddUpdateUser();
+
+            frm.onUserAdded += handonuserAdded;
             frm.ShowDialog();
-            frmLastUser_Load(null, null);
+            frm.onUserAdded -= handonuserAdded;
+
         }
 
         private void label1_Click(object sender, EventArgs e)

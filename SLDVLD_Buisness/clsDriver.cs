@@ -79,7 +79,7 @@ namespace SLDVLD_Buisness
         {
             return clsDriverData.UpdateDriver(this.DriverID,this.PresonID,this.CreatedByUserID);
         }
-        public static DataTable GetAdllDrivers()
+        public static Task<DataTable> GetAdllDrivers()
         {
             return clsDriverData.GetAllDrivers();
         }

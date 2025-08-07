@@ -76,6 +76,7 @@ namespace SLDVLD_Buisness
           this.NationalityCountryID = NationalityCountryID;
           this.ImagePath = ImagePath;
           this.CountryInfo  =clsCountry.Find(NationalityCountryID);
+         
             Mode = _Mode.UpdatePreson;
         }
 

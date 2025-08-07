@@ -35,8 +35,9 @@ namespace DVLDSluotion
 
         private void btLogin_Click(object sender, EventArgs e)
         {
-           
-              _User = clsUsers2.FindByUsernameAndPassword(txtUsername.Text, txtPassword.Text);
+           string password = clsGlobal.PasswordEncryption(txtPassword.Text.Trim());
+
+            _User = clsUsers2.FindByUsernameAndPassword(txtUsername.Text, password);
 
                 if(_User != null)
                 {

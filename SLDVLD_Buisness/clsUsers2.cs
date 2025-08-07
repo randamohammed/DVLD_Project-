@@ -12,13 +12,14 @@ namespace SLDVLD_Buisness
     {
         public int UserID { get; set; }
         public int PersonID { get; set; }
+        public string fullName { get; set; }
         public string UserName { get; set; }
         public bool IsActive { get; set; }
         public string Password { get; set; }
         enum _Mode { Add = 0, Update = 1 };
         _Mode Mode;
 
-        clsPerson PersonInfo;
+        clsPerson PersonInfo; 
 
 
         public clsUsers2()
@@ -28,6 +29,7 @@ namespace SLDVLD_Buisness
             this.UserName = "";
             this.Password = "";
             this.IsActive = true;
+          
             this.Mode = _Mode.Add;
         }
         public clsUsers2(int UserID, int PersonID, string UserName, string Password, bool IsActive)
@@ -38,8 +40,12 @@ namespace SLDVLD_Buisness
             this.Password = Password;
             this.IsActive = IsActive;
             this.PersonInfo = clsPerson.Find(PersonID);
+            fullName = PersonInfo.FullName;
             this.Mode = _Mode.Update;
         }
+
+
+       
 
         private bool AddUser()
         {
@@ -52,11 +58,7 @@ namespace SLDVLD_Buisness
             return clsUserDates.Update(this.UserID, this.PersonID, this.UserName, this.IsActive, this.Password);
         }
 
-        public static DataTable GetAllUsers()
-        {
-            return clsUserDates.GetAllUsers();
-        }
-
+        
         public static bool DeleteUser(int UserID)
         {
             return clsUserDates.DeleteUser(UserID);
@@ -87,6 +89,7 @@ namespace SLDVLD_Buisness
             string UserName = "", Password = "";
             bool IsActive = false;
             bool ISFound = false;
+            
 
             ISFound = clsUserDates.GetUserInfoByUserID(UserID, ref PersonID, ref UserName, ref IsActive, ref Password);
 
@@ -96,6 +99,8 @@ namespace SLDVLD_Buisness
             else
                 return null;
         }
+
+
 
         public static clsUsers2 FindByPersonID(int PersonID)
         {

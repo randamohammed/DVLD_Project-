@@ -4,6 +4,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 
@@ -160,41 +161,43 @@ namespace SLDVLD_DataAccess
         public static bool GetUserInfoByUsernameAndPassword(ref int UserID, ref int PersonID, string UserName, ref bool IsActive, string Password)
         {
 
-            SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConntaionString);
-            string Qurey = "select *from Users Where Password =@Password and UserName =@UserName";
-
-            SqlCommand command = new SqlCommand(Qurey, connection);
-            command.Parameters.AddWithValue("@UserName", UserName);
-            command.Parameters.AddWithValue("@Password", Password);
-
-            bool ISFound = false;
-
-            try
+            using (SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConntaionString))
             {
-                connection.Open();
-                SqlDataReader reader = command.ExecuteReader();
 
-                if (reader.Read())
+                using (SqlCommand command = new SqlCommand("SP_FindUserByUsernameAndPassword", connection))
                 {
-                    ISFound = true;
-                    UserID = (int)reader["UserID"];
-                    IsActive = (bool)reader["IsActive"];
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    command.Parameters.AddWithValue("@UserName", UserName);
+                    command.Parameters.AddWithValue("@Password", Password);
+
+                    bool ISFound = false;
+
+                    try
+                    {
+                        connection.Open();
+                        SqlDataReader reader = command.ExecuteReader();
+
+                        if (reader.Read())
+                        {
+                            ISFound = true;
+                            UserID = (int)reader["UserID"];
+                            IsActive = (bool)reader["IsActive"];
+                            PersonID = (int)reader["PersonID"];
+                        }
+                        else
+                        {
+                            ISFound = false;
+                        }
+                        reader.Close();
+                    }
+                    catch (Exception ex)
+                    {
+                        ISFound = false;
+                    }
+                    return ISFound;
                 }
-                else
-                {
-                    ISFound = false;
-                }
-                reader.Close();
             }
-            catch (Exception ex)
-            {
-                ISFound = false;
-            }
-            finally
-            {
-                connection.Close();
-            }
-            return ISFound;
 
         }
         public static bool ISUserExist(int UserID)
@@ -391,35 +394,38 @@ namespace SLDVLD_DataAccess
             return ISFound;
         }
 
-        public static DataTable GetAllUsers()
+        public   static DataTable GetAllUsers()
         {
+            //return await Task.Run(() =>
+            
             DataTable dt = new DataTable();
 
-            SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConntaionString);
-            string Qurey = "SELECT  Users.UserID, Users.PersonID, FullName = People.FirstName + ' ' + People.SecondName + ' ' + ISNULL( People.ThirdName,'') +' ' + People.LastName,Users.UserName, Users.IsActive" +
-                " FROM   Users INNER JOIN People ON Users.PersonID = People.PersonID";
-
-            SqlCommand command = new SqlCommand(Qurey, connection);
-
-            try
+            using (SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConntaionString))
             {
-                connection.Open();
-                SqlDataReader reader = command.ExecuteReader();
-                if (reader.HasRows)
+                using (SqlCommand command = new SqlCommand("SP_GetAllUsers", connection))
                 {
-                    dt.Load(reader);
+                    command.CommandType = CommandType.StoredProcedure;
+                    try
+                    {
+                        connection.Open();
+                        using (SqlDataReader reader = command.ExecuteReader())
+                        {
+                            if (reader.HasRows)
+                            {
+                                dt.Load(reader);
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        // هذا مهم جداً لتشخيص أي أخطاء في المستقبل
+                        Console.WriteLine("Data Access Error: " + ex.Message);
+                    }
                 }
-                reader.Close();
+                return dt;
             }
-            catch (Exception ex)
-            {
-
-            }
-            finally
-            {
-                connection.Close();
-            }
-            return dt;
+                
+            
         }
     }
 }

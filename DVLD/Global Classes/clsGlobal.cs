@@ -7,13 +7,23 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Microsoft.Win32;
+using System.Security.Cryptography;
 
 namespace DVLDSluotion
 {
     public class clsGlobal
     {
         public static clsUsers2 CurrentUser;
+
+        public static string PasswordEncryption(string Password)
+        {
+            using(SHA256 shapassword =   SHA256.Create())
+            {
+                byte[] bytes = shapassword.ComputeHash(Encoding.UTF8.GetBytes(Password));
+
+                return BitConverter.ToString(bytes).Replace("-","").ToLower();
+            }
+        }
 
         public static bool RememberUsernameAndPassword(string UserName,string Password)
         {
@@ -50,7 +60,7 @@ namespace DVLDSluotion
               
                    string Line = Registry.GetValue(PathKey, filePath,null) as string;
 
-                        while (Line  != null)
+                        if (Line  != null)
                         {
 
                             Console.WriteLine(Line);
@@ -69,7 +79,6 @@ namespace DVLDSluotion
             return false;
 
             }
-            return false;
         }
     }
 }

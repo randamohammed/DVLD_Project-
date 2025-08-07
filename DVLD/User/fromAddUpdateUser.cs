@@ -28,11 +28,20 @@ namespace DVLDSluotion
             _UserID = UserID;
         }
 
+        public delegate void AddedUser(UserViewModel _UserViewModel);
+
+        public event AddedUser onUserAdded;
+
+        public event Action<UserViewModel> onUserUpdated;
+
+
+
         enum enMode { Add = 0, Uppdet = 1 };
         enMode Mode = enMode.Add;
         int _UserID = -1;
         clsUsers2 _User;
 
+        
         void _RefrshDefluteValeus()
         {
             if (Mode == enMode.Add)
@@ -106,6 +115,8 @@ namespace DVLDSluotion
             {
                 errorProvider1.SetError(temp, null);
             }
+
+          
         }
 
 
@@ -144,7 +155,7 @@ namespace DVLDSluotion
             _User.UserID = _UserID;
             _User.UserName =  txtUserName.Text.Trim();
             _User.PersonID = ctrlPersonCardWithFiltere1.PersonID;
-            _User.Password = txtPassword.Text.Trim();
+            _User.Password =clsGlobal.PasswordEncryption(txtPassword.Text.Trim());
             _User.IsActive = chkIsActive.Checked;
 
             if(_User.Save())
@@ -152,11 +163,33 @@ namespace DVLDSluotion
                 MessageBox.Show("Data Save Successfully","Save Data",MessageBoxButtons.OK, MessageBoxIcon.Information);
                 lbTitel.Text = "Update User";
                 this.Text =lbTitel.Text;
-                Mode = enMode.Uppdet;
+                
                 lblUserID.Text = _User.UserID.ToString();
+                FulldatetoUserViewModel();
+
+
+
+                Mode = enMode.Uppdet;
             }
             else
                 MessageBox.Show("Error: Data Is not Saved Successfully.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+        }
+
+        void FulldatetoUserViewModel()
+        {
+            UserViewModel viewModel = new UserViewModel();
+
+            viewModel.UserID = _User.UserID;
+            viewModel.PersonID = _User.PersonID;
+            viewModel.UserName = _User.UserName;
+            viewModel.fullName =_User.fullName;
+            viewModel.IsActive   = _User.IsActive;
+
+            if (Mode == enMode.Add)
+                onUserAdded(viewModel);
+            else
+                onUserUpdated(viewModel);
 
         }
 
@@ -196,6 +229,11 @@ namespace DVLDSluotion
         private void fromAddUpdateUser_Activated(object sender, EventArgs e)
         {
             ctrlPersonCardWithFiltere1.TexFouce();
+        }
+
+        private void btClose_Click(object sender, EventArgs e)
+        {
+            this.Close();
         }
     }
 }

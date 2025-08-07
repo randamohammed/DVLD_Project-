@@ -24,15 +24,15 @@ namespace DVLDSluotion.Drivers
         }
         DataTable dtAllDriver;
 
-        void RefreshDate()
+        async void RefreshDate()
         {
-            dtAllDriver = clsDriver.GetAdllDrivers();
+            dtAllDriver = await clsDriver.GetAdllDrivers();
             dgDriver.DataSource = dtAllDriver;
             lbRecorde.Text = dgDriver.RowCount.ToString();
         }
-        private void frmListDrivers_Load(object sender, EventArgs e)
+        private async void frmListDrivers_Load(object sender, EventArgs e)
         {
-            dtAllDriver = clsDriver.GetAdllDrivers();
+            dtAllDriver =await clsDriver.GetAdllDrivers();
             dgDriver.DataSource = dtAllDriver;
             lbRecorde.Text = dgDriver.RowCount.ToString();
 
