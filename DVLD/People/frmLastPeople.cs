@@ -20,15 +20,12 @@ namespace DVLDSluotion
             InitializeComponent();
         }
 
-       private static DataTable dtAllPeople = clsPerson.GetAllPerson(); 
-       private static DataTable dtPeople = dtAllPeople.DefaultView.ToTable(false, "PersonID", "NationalNo",
-                                                       "FirstName", "SecondName", "ThirdName", "LastName",
-                                                       "GendorCaption", "DateOfBirth", "CountryName",
-                                                       "Phone", "Email");
-        private void frmLastPeople_Load(object sender, EventArgs e)
+          List<PersonViewModel> GetAllPerson = new List<PersonViewModel>();
+        private async void frmLastPeople_Load(object sender, EventArgs e)
         {
-            dgPaeople.DataSource = dtPeople;
-            lbRecords.Text = dtPeople.Rows.Count.ToString();
+            GetAllPerson =await PersonViewModel.GetAllPersonInList();
+            dgPaeople.DataSource = GetAllPerson;
+            lbRecords.Text = dgPaeople.Rows.Count.ToString();
             cbFilterBy.SelectedIndex = 0;
 
             if (dgPaeople.RowCount > 0)
@@ -87,20 +84,7 @@ namespace DVLDSluotion
 
         }
 
-        void _RefreshPeoplList()
-        {
-
-
-            dtAllPeople = clsPerson.GetAllPerson();
-            dtPeople = dtAllPeople.DefaultView.ToTable(false, "PersonID", "NationalNo", "FirstName", "SecondName",
-                                                                "ThirdName", "LastName", "GendorCaption", "DateOfBirth", "CountryName",
-                                                                 "Phone", "Email" ); 
-
-            dgPaeople.DataSource = dtPeople.DefaultView.ToTable();
-            lbRecords.Text = dtPeople.Rows.Count.ToString();
-
-        }
-
+      
         private void txtFilterValue_TextChanged(object sender, EventArgs e)
         {
             string FilterColumn = "";
@@ -156,14 +140,15 @@ namespace DVLDSluotion
             {
                 txtFilterValue.Visible = false;
                 cmGender.Visible = false;
-                _RefreshPeoplList();
+                dgPaeople.DataSource = null;
+                dgPaeople.DataSource  = GetAllPerson;
             }
 
-            if (FilterColumn == "PersonID")
-                dtPeople.DefaultView.RowFilter = string.Format("[{0}] = {1}", FilterColumn, txtFilterValue.Text.Trim());
-            else
-                dtPeople.DefaultView.RowFilter = string.Format("[{0}] Like '{1}%'", FilterColumn, txtFilterValue.Text.Trim());
-                   lbRecords.Text = dtPeople.Rows.Count.ToString();
+            //if (FilterColumn == "PersonID")
+            // //   dtPeople.DefaultView.RowFilter = string.Format("[{0}] = {1}", FilterColumn, txtFilterValue.Text.Trim());
+            //else
+            //   // dtPeople.DefaultView.RowFilter = string.Format("[{0}] Like '{1}%'", FilterColumn, txtFilterValue.Text.Trim());
+            //       lbRecords.Text = dgPaeople.Rows.Count.ToString();
 
         }
 
@@ -174,14 +159,14 @@ namespace DVLDSluotion
                 case "All":
                     {
                         txtFilterValue.Visible = false;
-                        _RefreshPeoplList();
+                      
                         break;
                     }
                 case "Male":
-                    dtPeople.DefaultView.RowFilter = string.Format("[{0}] = {1}", "GanderCaption", "0");
+                 //   dtPeople.DefaultView.RowFilter = string.Format("[{0}] = {1}", "GanderCaption", "0");
                     break;
                 default:
-                    dtPeople.DefaultView.RowFilter = string.Format("[{0}] = {1}", "GanderCaption", "1");
+                  //  dtPeople.DefaultView.RowFilter = string.Format("[{0}] = {1}", "GanderCaption", "1");
                     break;
 
             }
@@ -201,28 +186,73 @@ namespace DVLDSluotion
 
         private void toolStripMenuItem1_Click(object sender, EventArgs e)
         {
-            Form frm = new frmAddUpdatePerson();
+            frmAddUpdatePerson frm = new frmAddUpdatePerson();
+            frm.DataBackperconAfertAdded += Frm_DataBackperconAfertAdded;
             frm.ShowDialog();
-            _RefreshPeoplList();
+        }
+
+        private void Frm_DataBackperconAfertAdded(object from, PersonViewModel person)
+        {
+            GetAllPerson.Add(person);
+
+            dgPaeople.DataSource = null;
+            dgPaeople.DataSource = GetAllPerson;
         }
 
         private void editToolStripMenuItem_Click(object sender, EventArgs e)
         {
             int PersonID = int.Parse(dgPaeople.CurrentRow.Cells[0].Value.ToString());
-            Form frm = new frmAddUpdatePerson(PersonID);
+            frmAddUpdatePerson frm = new frmAddUpdatePerson(PersonID);
+            frmAddUpdatePerson.DataBackperconAfertUpdate += Frm_DataBackperconAfertUpdate;
             frm.ShowDialog();
-            _RefreshPeoplList();
+        }
+
+        private void Frm_DataBackperconAfertUpdate(object from, clsPerson person)
+        {
+           
+            for(int i  = 0;i < GetAllPerson.Count  -1;i++)
+            {
+                if (GetAllPerson[i] .PersonID == person.PersonID)
+                {
+                    GetAllPerson[i].Address   = person.Address; 
+                    GetAllPerson[i].FirstName   = person.FirstName; 
+                    GetAllPerson[i].SecondName     = person.SecondName; 
+                    GetAllPerson[i].LastName   = person.LastName; 
+                    GetAllPerson[i].ThirdName   = person.ThirdName;
+                    GetAllPerson[i].Phone = person.Phone;
+                    GetAllPerson[i].ImagePath = person.ImagePath; 
+                    GetAllPerson[i].NationalNo = person.NationalNo; 
+                    GetAllPerson[i].Email = person.Email; 
+                    GetAllPerson[i]. DateOfBirth= person.DateOfBirth; 
+                    GetAllPerson[i].CountryName = person.CountryInfo.CountryName; 
+
+                    if(person.Gendor ==1)
+                    {
+                        GetAllPerson[i].GendorCaption = "Female";
+                    }
+                    else
+                    {
+                        GetAllPerson[i].GendorCaption = "Male";
+                    }
+
+                }
+            }
         }
 
         private void deleteToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            int PersonID = int.Parse(dgPaeople.CurrentRow.Cells[0].Value.ToString());
-            if (MessageBox.Show("Are you Sure yo want to delete person " + PersonID,"Delete",MessageBoxButtons.YesNo,MessageBoxIcon.Question)==DialogResult.Yes)
+            PersonViewModel person = dgPaeople.CurrentRow.DataBoundItem as PersonViewModel;
+
+        //    int PersonID = int.Parse(dgPaeople.CurrentRow.Cells[0].Value.ToString());
+            if (MessageBox.Show("Are you Sure yo want to delete person " + person.PersonID,"Delete",MessageBoxButtons.YesNo,MessageBoxIcon.Question)==DialogResult.Yes)
             {
-                if(clsPerson.DeletePerson(PersonID))
+                if(clsPerson.DeletePerson(person.PersonID))
                 {
+                    GetAllPerson.Remove(person);
+
                     MessageBox.Show("Person Delete successfully", "Delete successfully", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    _RefreshPeoplList();
+                    dgPaeople = null;
+                    dgPaeople.DataSource = GetAllPerson;
                 }
             }
         }

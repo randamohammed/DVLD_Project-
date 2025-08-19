@@ -154,6 +154,7 @@
             this.showLicenesInfoToolStripMenuItem1.Name = "showLicenesInfoToolStripMenuItem1";
             this.showLicenesInfoToolStripMenuItem1.Size = new System.Drawing.Size(213, 40);
             this.showLicenesInfoToolStripMenuItem1.Text = "Show Licenes Info";
+            this.showLicenesInfoToolStripMenuItem1.Click += new System.EventHandler(this.showLicenesInfoToolStripMenuItem1_Click);
             // 
             // tbInternationalLicenses
             // 
@@ -222,7 +223,7 @@
             this.cmsInternationalLicenesHistory.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.showLicenesInfoToolStripMenuItem});
             this.cmsInternationalLicenesHistory.Name = "cmsInternationalLicenesHistory";
-            this.cmsInternationalLicenesHistory.Size = new System.Drawing.Size(214, 44);
+            this.cmsInternationalLicenesHistory.Size = new System.Drawing.Size(214, 66);
             // 
             // showLicenesInfoToolStripMenuItem
             // 
@@ -230,6 +231,7 @@
             this.showLicenesInfoToolStripMenuItem.Name = "showLicenesInfoToolStripMenuItem";
             this.showLicenesInfoToolStripMenuItem.Size = new System.Drawing.Size(213, 40);
             this.showLicenesInfoToolStripMenuItem.Text = "Show Licenes info";
+            this.showLicenesInfoToolStripMenuItem.Click += new System.EventHandler(this.showLicenesInfoToolStripMenuItem_Click);
             // 
             // ctrlDriverLicenses
             // 

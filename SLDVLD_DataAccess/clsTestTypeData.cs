@@ -10,140 +10,143 @@ namespace SLDVLD_DataAccess
 {
     public class clsTestTypeData
     {
-        public static bool GetTestTypeByID(int TestTypeID, ref int TestTypeFees, ref string TestTypeTitle,ref string TestTypeDescription)
+        public static bool GetTestTypeByID(int TestTypeID, ref int TestTypeFees, ref string TestTypeTitle, ref string TestTypeDescription)
         {
-            SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConntaionString);
-            string Qurey = "Select * from TestTypes Where TestTypeID =@TestTypeID";
-
-            SqlCommand command = new SqlCommand(Qurey, connection);
-            command.Parameters.AddWithValue("@TestTypeID", TestTypeID);
-
-            bool ISFound = false;
-
-            try
+            using (SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConntaionString))
             {
-                connection.Open();
-                SqlDataReader reader = command.ExecuteReader();
 
-                if (reader.Read())
+                using (SqlCommand command = new SqlCommand("SP_GetTestTypeByID", connection))
                 {
-                    ISFound = true;
-                    TestTypeFees = Convert.ToInt32(reader["TestTypeFees"]);
-                    TestTypeDescription = (string)reader["TestTypeDescription"];
-                    TestTypeTitle = (string)reader["TestTypeTitle"];
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.AddWithValue("@TestTypeID", TestTypeID);
+
+                    bool ISFound = false;
+
+                    try
+                    {
+                        connection.Open();
+                        SqlDataReader reader = command.ExecuteReader();
+
+                        if (reader.Read())
+                        {
+                            ISFound = true;
+                            TestTypeFees = Convert.ToInt32(reader["TestTypeFees"]);
+                            TestTypeDescription = (string)reader["TestTypeDescription"];
+                            TestTypeTitle = (string)reader["TestTypeTitle"];
+                        }
+                        else
+                        {
+                            ISFound = false;
+                        }
+                        reader.Close();
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine(ex.ToString());
+                    }
+                   
+                    return ISFound;
                 }
-                else
-                {
-                    ISFound = false;
-                }
-                reader.Close();
             }
-            catch (Exception ex)
-            {
-            }
-            finally
-            {
-                connection.Close();
-            }
-            return ISFound;
         }
 
-        public static DataTable GetallTestType()
+        public async static Task<DataTable> GetallTestType()
         {
-            DataTable dt = new DataTable();
+            return await Task.Run(() =>
+              {
+                  DataTable dt = new DataTable();
 
-            SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConntaionString);
-            string Query = "Select * from  TestTypes order by TestTypeID";
+                  using (SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConntaionString))
+                  {
+                      using (SqlCommand command = new SqlCommand("SP_GetallTestType", connection))
+                      {
+                          command.CommandType = CommandType.StoredProcedure;
+                          try
+                          {
+                              connection.Open();
 
-            SqlCommand command = new SqlCommand(Query, connection);
+                              SqlDataReader reader = command.ExecuteReader();
 
-            try
-            {
-                connection.Open();
+                              if (reader.HasRows)
+                              {
+                                  dt.Load(reader);
+                              }
+                              reader.Close();
+                          }
+                          catch (Exception ex)
+                          {
+                              Console.WriteLine(ex.Message);
+                          }
 
-                SqlDataReader reader = command.ExecuteReader();
-
-                if (reader.HasRows)
-                {
-                    dt.Load(reader);
-                }
-                reader.Close();
-            }
-            catch (Exception ex)
-            {
-
-            }
-            finally
-            {
-                connection.Close();
-            }
-            return dt;
+                          return dt;
+                      }
+                  }
+              });
         }
 
         public static int AddNewtsetType(int TestTypeFees, string TestTypeDescription, string TestTypeTitle)
         {
-            SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConntaionString);
-            string Qurey = @"Insert Into TestTypes (TestTypeFees,TestTypeDescription,TestTypeTitle)
-                             Values  (@TestTypeFees,@TestTypeDescription,@TestTypeTitle)
-                              ";
-
-            SqlCommand command = new SqlCommand(Qurey, connection);
-            command.Parameters.AddWithValue("@TestTypeFees", TestTypeFees);
-            command.Parameters.AddWithValue("@TestTypeDescription", TestTypeDescription);
-            command.Parameters.AddWithValue("@TestTypeTitle", TestTypeTitle);
-
-            int AddRow = -1;
-
-            try
+            using (SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConntaionString))
             {
-                connection.Open();
 
-                object AddTestType = command.ExecuteScalar();
-
-                if (AddTestType != null && int.TryParse(AddTestType.ToString(), out int CoutAdd))
+                using (SqlCommand command = new SqlCommand("SP_AddNewtsetType", connection))
                 {
-                    AddRow = CoutAdd;
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    command.Parameters.AddWithValue("@TestTypeFees", TestTypeFees);
+                    command.Parameters.AddWithValue("@TestTypeDescription", TestTypeDescription);
+                    command.Parameters.AddWithValue("@TestTypeTitle", TestTypeTitle);
+
+                    int AddRow = -1;
+
+                    try
+                    {
+                        connection.Open();                       
+  
+                        object AddTestType = command.ExecuteScalar();
+
+                        if (AddTestType != null && int.TryParse(AddTestType.ToString(), out int CoutAdd))
+                        {
+                            AddRow = CoutAdd;
+                        }
+
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine("Error in AddNewtsetType: " + ex.Message);
+                    }
+                   
+                    return AddRow;
                 }
-
             }
-            catch (Exception ex)
-            {
-            }
-            finally
-            {
-                connection.Close();
-            }
-            return AddRow;
         }
-
         public static bool UpdateTestType(int TestTypeID, string TestTypeDescription, string TestTypeIDTitle, int TestTypeFees)
         {
-            SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConntaionString);
-            string Query = @"Update TestTypes Set TestTypeTitle =@TestTypeTitle,TestTypeDescription =@TestTypeDescription,TestTypeFees =@TestTypeFees
-                           Where TestTypeID = @TestTypeID";
-
-            SqlCommand command = new SqlCommand(Query, connection);
-            command.Parameters.AddWithValue("@TestTypeID", TestTypeID);
-            command.Parameters.AddWithValue("@TestTypeTitle", TestTypeIDTitle);
-            command.Parameters.AddWithValue("@TestTypeDescription", TestTypeDescription);
-            command.Parameters.AddWithValue("@TestTypeFees", TestTypeFees);
-            int RowAffected = 0;
-
-            try
+            using (SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConntaionString))
             {
-                connection.Open();
+                using (SqlCommand command = new SqlCommand("SP_UpdateTsetType", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.AddWithValue("@TestTypeID", TestTypeID);
+                    command.Parameters.AddWithValue("@TestTypeTitle", TestTypeIDTitle);
+                    command.Parameters.AddWithValue("@TestTypeDescription", TestTypeDescription);
+                    command.Parameters.AddWithValue("@TestTypeFees", TestTypeFees);
+                    int RowAffected = 0;
 
-                RowAffected = command.ExecuteNonQuery();
-            }
-            catch (Exception ex)
-            {
+                    try
+                    {
+                        connection.Open();
 
+                        RowAffected = command.ExecuteNonQuery();
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine("Error in UpdateTestType: " + ex.Message);
+                    }
+                   
+                    return RowAffected > 0;
+                }
             }
-            finally
-            {
-                connection.Close();
-            }
-            return RowAffected > 0;
         }
     }
 }

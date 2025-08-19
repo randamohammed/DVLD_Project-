@@ -99,9 +99,9 @@ namespace SLDVLD_Buisness
 
         }
     
-        public static DataTable GetAllDetainedLicenses()
+        public static  async Task< DataTable> GetAllDetainedLicenses()
         {
-            return clsDetainedLicenseData.GetAllDetainedLicenses();
+            return   await clsDetainedLicenseData.GetAllDetainedLicenses();
 
         }
 

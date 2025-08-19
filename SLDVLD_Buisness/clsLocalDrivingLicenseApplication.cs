@@ -134,9 +134,9 @@ namespace SLDVLD_Buisness
             return clsLocalDrivingLicenseApplicationData.DeleteLocalDrivingLicenseApplication(this.LocalDrivingLicenseApplicationID);
         }
 
-        public static DataTable GetAllLocalDrivingLicenseApplication()
+        public static async Task<DataTable> GetAllLocalDrivingLicenseApplication()
         {
-            return clsLocalDrivingLicenseApplicationData.GetAllLocalDrivingLicenseApplications();
+            return await clsLocalDrivingLicenseApplicationData.GetAllLocalDrivingLicenseApplications();
         }
         public bool DoesPassTestType(clsTestTypes.enTestType TestTypeID)
         {

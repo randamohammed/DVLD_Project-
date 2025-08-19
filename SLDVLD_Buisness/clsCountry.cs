@@ -48,9 +48,9 @@ namespace SLDVLD_Buisness
                 return null;
         }
 
-        public static DataTable GetAllCountries()
+        public static async Task< DataTable> GetAllCountries()
         {
-            return clsCountryData.GetAllCountries();
+            return await clsCountryData.GetAllCountries();
         }
     }
 }

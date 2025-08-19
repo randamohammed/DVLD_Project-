@@ -29,8 +29,13 @@ namespace DVLDSluotion
             _PersonID = PersonID;
         }
 
-        public delegate void DataBackEventHandler(object from,int  PersonID);
-        public event DataBackEventHandler DataBackPersonID;
+        PersonViewModel PersonViewModel = new PersonViewModel();
+        public delegate void DataBackEventHandlerAdded(object from,PersonViewModel  person);
+        public event DataBackEventHandlerAdded DataBackperconAfertAdded;
+
+
+        public delegate void DataBackEventHandlerUpdated(object from, clsPerson person);
+        public static event DataBackEventHandlerUpdated DataBackperconAfertUpdate;
 
         enum _Mode { AddPreson  =0,UpdatePerson=1};
         enum eGnder { Male =0,Female=1};
@@ -38,14 +43,16 @@ namespace DVLDSluotion
         int _PersonID = 0;
         clsPerson _Person;
 
-      private void _FullCountryIncombox()
+      private async void _FullCountryIncombox()
         {
-            DataTable dataTable = clsCountry.GetAllCountries();
+
+            DataTable dataTable =await clsCountry.GetAllCountries();
 
             foreach(DataRow row in dataTable.Rows)
             {
                 combCountry.Items.Add(row["CountryName"]);
             }
+            combCountry.SelectedIndex = 0;
         }
 
         bool _HandleImagePerson()
@@ -223,11 +230,44 @@ namespace DVLDSluotion
                 lbPersonID.Text = _Person.PersonID.ToString();
                 lbTitel.Text = "Update Person";
                 this.Text = lbTitel.Text.Trim();
-                DataBackPersonID?.Invoke(this,_PersonID);
+
+                if (Mode == _Mode.UpdatePerson)
+                {
+                    DataBackperconAfertUpdate?.Invoke(this, _Person);
+                }
+                else
+                {
+                    GetDdateFromPersonToPersonViewModel();
+                    DataBackperconAfertAdded(this, PersonViewModel);
+                }
+                Mode = _Mode.UpdatePerson;
             }
         }
 
+        void GetDdateFromPersonToPersonViewModel()
+        {
+            PersonViewModel.PersonID = _Person.PersonID;
+            PersonViewModel.Address = _Person.Address;
+            PersonViewModel.FirstName = _Person.FirstName;
+            PersonViewModel.SecondName = _Person.SecondName;
+            PersonViewModel.LastName = _Person.LastName;
+            PersonViewModel.ThirdName = _Person.ThirdName;
+            PersonViewModel.Phone = _Person.Phone;
+            PersonViewModel.ImagePath = _Person.ImagePath;
+            PersonViewModel.NationalNo = _Person.NationalNo;
+            PersonViewModel.Email = _Person.Email;
+            PersonViewModel.DateOfBirth = _Person.DateOfBirth;
+            PersonViewModel.CountryName = _Person.CountryInfo.CountryName;
 
+            if (_Person.Gendor == 1)
+            {
+                PersonViewModel.GendorCaption = "Female";
+            }
+            else
+            {
+                PersonViewModel.GendorCaption = "Male";
+            }
+        }
         private void tebEmail_Validating_1(object sender, CancelEventArgs e)
         {
             if (tebEmail.Text == "")
@@ -270,7 +310,7 @@ namespace DVLDSluotion
                 errorProvider1.SetError(tebNationalNo, null);
             }
 
-            if (tebNationalNo.Text != _Person.NationalNo && clsPerson.ISPeresonExist(_PersonID))
+            if (tebNationalNo.Text != _Person.NationalNo && clsPerson.ISPeresonExist(tebNationalNo.Text))
             {
                 e.Cancel = true;
                 errorProvider1.SetError(tebNationalNo, "National Number is used for another person!");

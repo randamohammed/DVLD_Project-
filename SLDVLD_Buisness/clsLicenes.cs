@@ -110,9 +110,9 @@ namespace SLDVLD_Buisness
             return clsLicenesData.UdateLicenes(this.LicenseID, this.ApplicationID, this.DriverID, this.LicenseClass, this.CreatedByUserID, this.Notes,
                 (byte)this.IssueReason, this.ExpirationDate, this.IsActive, this.PaidFees, this.IssueDate);
         }
-        public static DataTable GetAllLicenes()
+        public static async Task<DataTable> GetAllLicenes()
         {
-            return clsLicenesData.GetAllLicenses();
+            return await clsLicenesData.GetAllLicenses();
         }
         public static bool IsLicenseExistByPersonID(int PersonID, int LicenseClassID)
         {
@@ -146,9 +146,9 @@ namespace SLDVLD_Buisness
             return false;
         }
 
-        public static DataTable GetDriverLicenses(int DriverID)
+        public static async Task< DataTable> GetDriverLicenses(int DriverID)
         {
-            return clsLicenesData.GetDriverLicenses(DriverID);
+            return await clsLicenesData.GetDriverLicenses(DriverID);
         }
         public static string GetIssueReasonText(enIssueReason IssueReason)
         {

@@ -178,7 +178,7 @@ namespace DVLDSluotion
 
         void FulldatetoUserViewModel()
         {
-            UserViewModel viewModel = new UserViewModel();
+          UserViewModel viewModel = new UserViewModel();
 
             viewModel.UserID = _User.UserID;
             viewModel.PersonID = _User.PersonID;

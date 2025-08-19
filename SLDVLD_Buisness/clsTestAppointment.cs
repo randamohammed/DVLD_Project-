@@ -122,14 +122,14 @@ namespace SLDVLD_Buisness
             return clsTestAppointment.GetAllTestAppointments();
         }
 
-        public static DataTable GetApplicationTestAppointmentsPerTestType(int LocalDrivingLicenseApplicationID, clsTestTypes.enTestType TestTypeID)
+        public static async Task<DataTable> GetApplicationTestAppointmentsPerTestType(int LocalDrivingLicenseApplicationID, clsTestTypes.enTestType TestTypeID)
         {
-            return clsTestAppointmentData.GetApplicationTestAppointmentsPerTestType(LocalDrivingLicenseApplicationID, (int)TestTypeID);
+            return await clsTestAppointmentData.GetApplicationTestAppointmentsPerTestType(LocalDrivingLicenseApplicationID, (int)TestTypeID);
         }
         
-        public DataTable GetApplicationTestAppointmentsPerTestType(clsTestTypes.enTestType TestTypeID)
+        public async Task<DataTable> GetApplicationTestAppointmentsPerTestType(clsTestTypes.enTestType TestTypeID)
         {
-            return clsTestAppointmentData.GetApplicationTestAppointmentsPerTestType(this.LocalDrivingLicenseApplicationID,(int)TestTypeID);
+            return await clsTestAppointmentData.GetApplicationTestAppointmentsPerTestType(this.LocalDrivingLicenseApplicationID,(int)TestTypeID);
         }
 
         public bool Save()

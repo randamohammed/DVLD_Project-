@@ -10,15 +10,16 @@ namespace SLDVLD_Buisness
 {
     public class clsTestTypes
     {
-        public int Fees { get; set; }
+        public clsTestTypes.enTestType ID { get; set; }
+     
         public string Title { get; set; }
         public string Description { get; set; }
-
+        public int Fees { get; set; }
         enum _Mode { AddNew =0,Update =1}
         _Mode Mode;
 
         public enum enTestType { VisionTes =1, WrittenTest =2,StreetTest =3};
-        public clsTestTypes.enTestType ID {  get; set; }
+      
 
       public  clsTestTypes()
         {
@@ -52,6 +53,8 @@ namespace SLDVLD_Buisness
         {
             return clsTestTypeData.UpdateTestType((int) this.ID, this.Description, this.Title, this.Fees);
         }
+
+  
         public static clsTestTypes FindByID( clsTestTypes.enTestType ID)
         {
             int Fees = 0;
@@ -67,9 +70,26 @@ namespace SLDVLD_Buisness
                 return null;
         }
 
-        public static DataTable GetAllTestType()
+        public static async Task<DataTable> GetAllTestType()
         {
-            return clsTestTypeData.GetallTestType();
+            return await clsTestTypeData.GetallTestType();
+        }
+
+       public static async Task<List<clsTestTypes>> GetAllTestTypeInList()
+        {
+            List<clsTestTypes> list = new List<clsTestTypes>();
+
+            DataTable dttest = await GetAllTestType();
+
+            foreach(DataRow testtype in dttest.Rows)
+            {
+                if(testtype != null)
+                {
+                    clsTestTypes clsTestTypes =  clsTestTypes.FindByID((enTestType)testtype["TestTypeID"]);
+                    list.Add(clsTestTypes);
+                }
+            }
+            return list;
         }
         public bool Save()
         {

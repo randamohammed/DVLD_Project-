@@ -33,24 +33,18 @@ namespace SLDVLD_Buisness
 
         public UserViewModel()
         {
-            this.UserID = 0;
-            this.PersonID = 0;
-            this.UserName = "";
-            this.IsActive = true;
-           
-           
-        }
 
-        public static DataTable GetAllUsers()
+        }
+        public static async Task<DataTable> GetAllUsers()
         {
-            return clsUserDates.GetAllUsers();
+            return await clsUserDates.GetAllUsers();
         }
         ///
-        public static List<UserViewModel> GetAllDataUserLst()
+        public static  async Task< List<UserViewModel>> GetAllDataUserLst()
         {
+           
+            DataTable dtuser =await GetAllUsers();
             List<UserViewModel> listuser = new List<UserViewModel>();
-
-            DataTable dtuser = GetAllUsers();
 
             foreach (DataRow row in dtuser.Rows)
             {

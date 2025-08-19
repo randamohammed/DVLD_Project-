@@ -132,9 +132,9 @@ namespace SLDVLD_Buisness
                 return null;
 
         }
-        public static DataTable GetAllPerson()
+        public static async Task<DataTable> GetAllPerson()
         {
-            return clsPersonData.GetAllPeople();
+            return await clsPersonData.GetAllPeople();
         }
 
         public static bool ISPeresonExist(int PersonID)

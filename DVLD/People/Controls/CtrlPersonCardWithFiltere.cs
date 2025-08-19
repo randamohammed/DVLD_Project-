@@ -142,16 +142,17 @@ namespace DVLDSluotion
         {
             frmAddUpdatePerson frm =  new frmAddUpdatePerson();
             frm.ShowDialog();
-            frm.DataBackPersonID += BackEvent;
+            frm.DataBackperconAfertAdded += Frm_DataBackperconAfertAdded; ;
         }
 
-        private void BackEvent(object from, int PersonID)
+        private void Frm_DataBackperconAfertAdded(object from, PersonViewModel person)
         {
             conTypeFilter.SelectedIndex = 0;
-            tebFilter.Text =PersonID.ToString();
-           ctrlPersonCardcs2.LoadPersonInfo(PersonID);
-
+            tebFilter.Text = person.PersonID.ToString();
+            ctrlPersonCardcs2.LoadPersonInfo(person.PersonID);
         }
+
+  
 
         private void tebFilter_Validating(object sender, CancelEventArgs e)
         {

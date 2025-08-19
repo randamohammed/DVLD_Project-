@@ -55,7 +55,11 @@
     <Compile Include="clsTests.cs" />
     <Compile Include="clsTestTypes.cs" />
     <Compile Include="clsUsers2.cs" />
+    <Compile Include="DriverInternationalLicensesViewModel.cs" />
+    <Compile Include="DriverViewModel.cs" />
+    <Compile Include="PersonViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TestAppointmentViewModel.cs" />
     <Compile Include="UserViewModel.cs" />
   </ItemGroup>
   <ItemGroup>

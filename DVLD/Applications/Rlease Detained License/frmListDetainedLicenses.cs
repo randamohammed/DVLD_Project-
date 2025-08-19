@@ -26,11 +26,11 @@ namespace DVLDSluotion.Applications.Rlease_Detained_License
 
         DataTable _dtDetaintedLicense;
 
-        private void frmListDetainedLicenses_Load(object sender, EventArgs e)
+        private async void frmListDetainedLicenses_Load(object sender, EventArgs e)
         {
             cmFindBy.SelectedIndex = 0;
 
-            _dtDetaintedLicense = clsDetainedLicenses.GetAllDetainedLicenses();
+            _dtDetaintedLicense =await clsDetainedLicenses.GetAllDetainedLicenses();
             dgListdetainedLicense.DataSource = _dtDetaintedLicense;
             lbRecordes.Text = dgListdetainedLicense.RowCount.ToString();
 
@@ -184,7 +184,7 @@ namespace DVLDSluotion.Applications.Rlease_Detained_License
 
                 frmShowPerson frm = new frmShowPerson(PersonID);
                 frm.ShowDialog();
-
+            
         }
 
         private void showLicenseDetailesToolStripMenuItem_Click(object sender, EventArgs e)
@@ -211,7 +211,7 @@ namespace DVLDSluotion.Applications.Rlease_Detained_License
             frmReleaseDetainedLicenseApplication frm = new frmReleaseDetainedLicenseApplication(LicenseID);
             frm.ShowDialog();
             frmListDetainedLicenses_Load(null, null);
-
+            
         }
 
         private void btReleaseLicense_Click(object sender, EventArgs e)

@@ -293,6 +293,7 @@
             this.lblTitle.TabIndex = 135;
             this.lblTitle.Text = "Local Driving License Applications";
             this.lblTitle.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.lblTitle.Click += new System.EventHandler(this.lblTitle_Click);
             // 
             // lblRecordsCount
             // 

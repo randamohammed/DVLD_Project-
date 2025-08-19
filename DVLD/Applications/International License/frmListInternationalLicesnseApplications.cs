@@ -19,11 +19,11 @@ namespace DVLDSluotion.Applications.International_License
         }
 
         DataTable _dtAllInternationalLicesnseApplications;
-        private void frmListInternationalLicesnseApplications_Load(object sender, EventArgs e)
+        private async void frmListInternationalLicesnseApplications_Load(object sender, EventArgs e)
         {
             cbFilterBy.SelectedIndex = 0;
 
-            _dtAllInternationalLicesnseApplications = clsInternationalLicense.GetAllInternationalLicenses();
+            _dtAllInternationalLicesnseApplications =await clsInternationalLicense.GetAllInternationalLicenses();
             dgInernationalLicenseApplications.DataSource = _dtAllInternationalLicesnseApplications;
             lbRecordes.Text = dgInernationalLicenseApplications.RowCount.ToString();
 

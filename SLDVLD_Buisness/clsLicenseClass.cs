@@ -54,9 +54,9 @@ namespace SLDVLD_Buisness
             return clsLicenseClassesData.UpdateLicenseClass(this.LicenseClassID, this.ClassName,
                 this.Description, this.MinimumAllowedAge, this.DefaultValidityLength, this.ClassFees);
         }   
-        public static  DataTable GetAllLicenesClass()
+        public static  async Task<DataTable> GetAllLicenesClass()
         {
-            return clsLicenseClassesData.GetAllLicenseClasses();
+            return await clsLicenseClassesData.GetAllLicenseClasses();
         }
 
         public bool Save()

@@ -20,29 +20,29 @@ namespace DVLDSluotion
         {
             InitializeComponent();
         }
-        DataTable dtAllUser;
+     
         private void btClose_Click(object sender, EventArgs e)
         {
             this.Close();
         }
-
+        List<UserViewModel> FilterDate;
         List<UserViewModel> listuser = new List<UserViewModel>();
         ObservableCollection<UserViewModel> ObservableCollectionusr  ;
       
-        private    void frmLastUser_Load(object sender, EventArgs e)
+        private    async void frmLastUser_Load(object sender, EventArgs e)
         {
 
-            listuser = UserViewModel.GetAllDataUserLst();
+            listuser =await UserViewModel.GetAllDataUserLst();
             ObservableCollectionusr = new ObservableCollection<UserViewModel>(listuser);
             
             cmFilter.SelectedIndex = 0;
-            dvUsers.DataSource = ObservableCollectionusr;
 
             _RefreashData();
         }
         void _RefreashData()
         {
-
+            dvUsers.DataSource = null;
+            dvUsers.DataSource = ObservableCollectionusr;
             lbRecorde.Text = dvUsers.RowCount.ToString();
 
             if (dvUsers.Rows.Count > 0)
@@ -67,10 +67,10 @@ namespace DVLDSluotion
         private void cmFilter_SelectedIndexChanged(object sender, EventArgs e)
         {
            
-          if(cmFilter.Text == "IS Active")
+          if(cmFilter.Text == "Is Active")
             {
                 txtFilterVaaluse.Visible =false;
-                cmFilter.Visible = true;
+                cmISActive.Visible = true;
                 cmISActive.SelectedIndex = 0;
                 cmISActive.Focus(); 
             }
@@ -88,48 +88,55 @@ namespace DVLDSluotion
                 }
                
             }
-           
+            
         }
 
         private void txtFilterVaaluse_TextChanged(object sender, EventArgs e)
         {
+            List<UserViewModel> FilterDate;
 
-            string CoulmnsFilter = ""; 
-            switch(cmFilter.Text)
+            if (txtFilterVaaluse.Text == "")
             {
-                case "User ID":
-                    CoulmnsFilter = "UserID";
-                    break;
-                case "Person ID":
-                    CoulmnsFilter = "PersonID";
-                    break ;
-                case "User Name":
-                    CoulmnsFilter = "UserName";
-                    break ;
-                case "Full Name":
-                    CoulmnsFilter = "FullName";
-                    break ;
-                default:
-                    CoulmnsFilter = "None";
-                    break;
-            }
 
-            if(CoulmnsFilter == "None"|| txtFilterVaaluse.Text =="")
-            {
-                dtAllUser.DefaultView.RowFilter = "";
-                dvUsers.DataSource = ObservableCollectionusr;
+                _RefreashData();
+                lbRecorde.Text = dvUsers.RowCount.ToString();
                 return;
             }
 
-             if(CoulmnsFilter == "UserID" || CoulmnsFilter == "PersonID")
-             {
-                dtAllUser.DefaultView.RowFilter = string.Format("[{0}] ={1}",CoulmnsFilter,txtFilterVaaluse.Text);
-             }
-             else
-                dtAllUser.DefaultView.RowFilter = string.Format("[{0}] Like '{1}%'", CoulmnsFilter, txtFilterVaaluse.Text);
-            lbRecorde.Text = dvUsers.RowCount.ToString();
-        }
+            switch (cmFilter.Text)
+            {
+                case "User ID":
+                    {
+                        FilterDate = ObservableCollectionusr.Where(n => n.UserID == int.Parse(txtFilterVaaluse.Text)).ToList();
+                        dvUsers.DataSource = FilterDate;
+                        break;
+                    }
+                case "Person ID":
+                    {
+                        FilterDate = ObservableCollectionusr.Where(n => n.PersonID == int.Parse(txtFilterVaaluse.Text)).ToList();
+                        dvUsers.DataSource = FilterDate;
+                        break;
+                    }
+                   
+                case "User Name":
+                    {
+                        FilterDate = ObservableCollectionusr.Where(n => n.UserName == txtFilterVaaluse.Text).ToList();
+                        dvUsers.DataSource = FilterDate;
+                        break;
+                    }
+                case "Full Name":
+                    {
 
+                        FilterDate = ObservableCollectionusr.Where(n => n.UserName == txtFilterVaaluse.Text).ToList();
+                        dvUsers.DataSource = FilterDate;
+                        break;
+                    }
+            }
+
+            lbRecorde.Text = dvUsers.RowCount.ToString();
+
+        }
+       
         private void cmISActive_SelectedIndexChanged(object sender, EventArgs e)
         {
             string FilterColumn = cmISActive.Text;
@@ -137,20 +144,21 @@ namespace DVLDSluotion
             {
                 case "All":
                     {
-                        dvUsers.DataSource = ObservableCollectionusr;
+                        _RefreashData();
                         break;
                     }
                 case "Yes":
                     {
-                        FilterColumn = "1";
+                        FilterDate = ObservableCollectionusr.Where(n => n.IsActive == true).ToList();
+                        dvUsers.DataSource = FilterDate;
                         break;
                     }
                 default:
-                    FilterColumn = "0";
+                    FilterDate = ObservableCollectionusr.Where(n => n.IsActive == false).ToList();
+                    dvUsers.DataSource = FilterDate;
                     break;
             }
-                    dtAllUser.DefaultView.RowFilter = string.Format("[{0}] = {1}", "IsActive", FilterColumn);
-
+            lbRecorde.Text = dvUsers.RowCount.ToString();
         }
 
         private void addNewToolStripMenuItem_Click(object sender, EventArgs e)
@@ -166,8 +174,6 @@ namespace DVLDSluotion
         {
 
            ObservableCollectionusr.Add(_user);
-            dvUsers.DataSource = null;
-            dvUsers.DataSource = ObservableCollectionusr;
             _RefreashData();
         }
 
@@ -222,8 +228,6 @@ namespace DVLDSluotion
                     if (clsUsers2.DeleteUser(SelectUser.UserID))
                     {
                         ObservableCollectionusr.Remove(SelectUser);
-                     dvUsers.DataSource = null;
-                     dvUsers.DataSource = ObservableCollectionusr;
                     _RefreashData();
                     MessageBox.Show("User delete  successfully", "Delet", MessageBoxButtons.OK, MessageBoxIcon.Information);
                       

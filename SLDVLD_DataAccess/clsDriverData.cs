@@ -13,160 +13,200 @@ namespace SLDVLD_DataAccess
     {
         public static bool FnidDriverByPresonID(int PresonId, ref int DriverID, ref int CreatedByUserID, ref DateTime CreatedDate)
         {
-            SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConntaionString);
-            string Qurey = "select * from  Drivers  Where PersonID = @PersonID";
-
-            SqlCommand command = new SqlCommand(Qurey, connection);
-            command.Parameters.AddWithValue("@PersonID", PresonId);
-            bool ISFound = false;
-            try
+            using (SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConntaionString))
             {
-                connection.Open();
-                SqlDataReader reader = command.ExecuteReader();
-                if (reader.Read())
+                using (SqlCommand command = new SqlCommand("SP_FnidDriverByPresonID", connection))
                 {
-                    ISFound = true;
-                    CreatedDate = Convert.ToDateTime(reader["CreatedDate"]);
-                    CreatedByUserID = (int)reader["CreatedByUserID"];
-                    DriverID = (int)reader["DriverID"];
-                }
-                reader.Close();
-            }
-            catch (Exception Ex)
-            {
+                    command.CommandType = CommandType.StoredProcedure;
 
+                    command.Parameters.AddWithValue("@PersonID", PresonId);
+                    bool ISFound = false;
+                    try
+                    {
+                        connection.Open();
+                        using (SqlDataReader reader = command.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                ISFound = true;
+                                CreatedDate = Convert.ToDateTime(reader["CreatedDate"]);
+                                CreatedByUserID = (int)reader["CreatedByUserID"];
+                                DriverID = (int)reader["DriverID"];
+                            }
+                        }
+                    }
+                    catch (Exception Ex)
+                    {
+
+                    }
+
+                    return ISFound;
+                }
             }
-            finally
-            {
-                connection.Close();
-            }
-            return ISFound;
         }
-        public static bool FinidDriverID( int DriverID,ref int PresonId, ref int CreatedByUserID, ref DateTime CreatedDate)
+        public static bool FinidDriverID(int DriverID, ref int PresonId, ref int CreatedByUserID, ref DateTime CreatedDate)
         {
-            SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConntaionString);
-            string Qurey = "select * from  Drivers  Where DriverID = @DriverID";
-
-            SqlCommand command = new SqlCommand(Qurey, connection);
-            command.Parameters.AddWithValue("@DriverID", DriverID);
-            bool ISFound = false;
-            try
+            using (SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConntaionString))
             {
-                connection.Open();
-                SqlDataReader reader = command.ExecuteReader();
-                if (reader.Read())
+                using (SqlCommand command = new SqlCommand("SP_FinidDriverID", connection))
                 {
-                    ISFound = true;
-                    CreatedDate = Convert.ToDateTime(reader["CreatedDate"]);
-                    CreatedByUserID = (int)reader["CreatedByUserID"];
-                    PresonId = (int)reader["PersonID"];
-                }
-                reader.Close();
-            }
-            catch (Exception Ex)
-            {
+                    command.CommandType = CommandType.StoredProcedure;
 
+                    command.Parameters.AddWithValue("@DriverID", DriverID);
+                    bool ISFound = false;
+                    try
+                    {
+                        connection.Open();
+                        using (SqlDataReader reader = command.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                ISFound = true;
+                                CreatedDate = Convert.ToDateTime(reader["CreatedDate"]);
+                                CreatedByUserID = (int)reader["CreatedByUserID"];
+                                PresonId = (int)reader["PersonID"];
+                            }
+                        }
+                    }
+                    catch (Exception Ex)
+                    {
+
+                    }
+
+                    return ISFound;
+                }
             }
-            finally
-            {
-                connection.Close();
-            }
-            return ISFound;
         }
 
+        public static bool FindDriverByIDforDriverView(int DriverID, ref int PresonId, ref string NationalNo,ref  string FullName, ref DateTime CreatedDate , ref bool  ISActive )
+        {
+            using (SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConntaionString))
+            {
+                using (SqlCommand command = new SqlCommand("SP_FindDriverByIDforDriverView", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    command.Parameters.AddWithValue("@DriverID", DriverID);
+                    bool ISFound = false;
+                    try
+                    {
+                        connection.Open();
+                        using (SqlDataReader reader = command.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                ISFound = true;
+                                CreatedDate = Convert.ToDateTime(reader["CreatedDate"]);
+                                NationalNo = (string)reader["NationalNo"];
+                                FullName = (string)reader["FullName"];
+                                PresonId = (int)reader["PersonID"];
+                                ISActive = Convert.ToBoolean(reader["NumberOfActiveLicenses"]);
+                            }
+                        }
+                    }
+                    catch (Exception Ex)
+                    {
+
+                    }
+
+                    return ISFound;
+                }
+            }
+        }
         public static async Task<DataTable> GetAllDrivers()
         {
-            DataTable table = new DataTable();
+           
 
             return await Task.Run(() =>
             {
-                SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConntaionString);
-
-                string Query = @"select * from Drivers_View order by FullName";
-
-                SqlCommand command = new SqlCommand(Query, connection);
-
-                try
+                DataTable table = new DataTable();
+                using (SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConntaionString))
                 {
-                    connection.Open();
-                    SqlDataReader reader = command.ExecuteReader();
-                    if (reader.HasRows)
-                        table.Load(reader);
+                    using (SqlCommand command = new SqlCommand("SP_GetAllDrivers", connection))
+                    {
+                        command.CommandType = CommandType.StoredProcedure;
+                        try
+                        {
+                            connection.Open();
+                            using (SqlDataReader reader = command.ExecuteReader())
+                            {
+                                if (reader.HasRows)
+                                    table.Load(reader);
 
-                    reader.Close();
-                }
-                catch (Exception Ex)
-                {
+                            }
+                        }
+                        catch (Exception Ex)
+                        {
 
+                        }
+                    }
+                    return table;
                 }
-                finally
-                {
-                    connection.Close();
-                }
-                return table;
             });
         }
-        public static bool UpdateDriver(int DriverID,int  PresonID,int CreatedByUserID)
+
+
+        public static bool UpdateDriver(int DriverID, int PresonID, int CreatedByUserID)
         {
-            SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConntaionString);
-            string Query = @"Update Drivers Set PresonID = @PresonID ,CreatedByUserID =@CreatedByUserID
-                             WHERE DriverID = @DriverID";
-
-            SqlCommand command = new SqlCommand(Query, connection);
-            command.Parameters.AddWithValue("@DriverID", DriverID);
-            command.Parameters.AddWithValue("@PresonID", PresonID);
-            command.Parameters.AddWithValue("@CreatedByUserID", CreatedByUserID);
-
-            int RowAffeced = 0;
-
-            try
+            using (SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConntaionString))
             {
-                connection.Open();
-                RowAffeced = command.ExecuteNonQuery();
-            }
-            catch(Exception Ex)
-            {
-
-            }
-            finally
-            {
-                connection.Close();
-            }
-            return RowAffeced > 0;
-        }
-        public static int AddNewDriver( int CreatedByUserID, int PersonID)
-        {
-            SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConntaionString);
-            string Qurey = @"INSERT INTO Drivers (CreatedByUserID,CreatedDate,PersonID)  
-                              VALUES (@CreatedByUserID,@CreatedDate,@PersonID)
-                               select SCOPE_IDENTITY()";
-
-            SqlCommand command = new SqlCommand(Qurey, connection);
-            command.Parameters.AddWithValue("@CreatedDate", DateTime.Now);
-            command.Parameters.AddWithValue("@CreatedByUserID", CreatedByUserID);
-            command.Parameters.AddWithValue("@PersonID", PersonID);
-
-            int DriverID = -1;
-            try
-            {
-                connection.Open();
-                object Reslut = command.ExecuteScalar();
-                if (Reslut != null && int.TryParse(Reslut.ToString(), out int InsertId))
+                using (SqlCommand command = new SqlCommand("SP_UpdateDriver", connection))
                 {
-                    DriverID = InsertId;
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    command.Parameters.AddWithValue("@DriverID", DriverID);
+                    command.Parameters.AddWithValue("@PresonID", PresonID);
+                    command.Parameters.AddWithValue("@CreatedByUserID", CreatedByUserID);
+
+                    int RowAffeced = 0;
+
+                    try
+                    {
+                        connection.Open();
+                        RowAffeced = command.ExecuteNonQuery();
+                    }
+                    catch (Exception Ex)
+                    {
+
+                    }
+
+                    return RowAffeced > 0;
+
                 }
             }
-            catch (Exception Ex)
-            {
-
             }
-            finally
+
+        public static int AddNewDriver(int CreatedByUserID, int PersonID)
+        {
+            using (SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConntaionString))
             {
-                connection.Close();
+                using (SqlCommand command = new SqlCommand("SP_AddNewDriver", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    command.Parameters.AddWithValue("@CreatedDate", DateTime.Now);
+                    command.Parameters.AddWithValue("@CreatedByUserID", CreatedByUserID);
+                    command.Parameters.AddWithValue("@PersonID", PersonID);
+
+                    int DriverID = -1;
+                    try
+                    {
+                        connection.Open();
+                        object Reslut = command.ExecuteScalar();
+                        if (Reslut != null && int.TryParse(Reslut.ToString(), out int InsertId))
+                        {
+                            DriverID = InsertId;
+                        }
+                    }
+                    catch (Exception Ex)
+                    {
+
+                    }
+
+                    return DriverID;
+
+                }
             }
-            return DriverID;
-
-
         }
     }
 }

@@ -83,11 +83,11 @@ namespace DVLDSluotion
                 ctrlPersonCardWithFiltere2.LoadPersonnfo(_LocalDrivingLicenseApplication.ApplicantPersonID);
             }
         }
-        void _FullLicenesClass()
+        async void _FullLicenesClass()
         {
             DataTable dt = new DataTable();
 
-            dt = clsLicenseClass.GetAllLicenesClass();
+            dt =await clsLicenseClass.GetAllLicenesClass();
             foreach (DataRow dr in dt.Rows)
             {
                 cmLicenseClass.Items.Add(dr["ClassName"].ToString());

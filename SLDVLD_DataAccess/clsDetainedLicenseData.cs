@@ -18,60 +18,61 @@ namespace SLDVLD_DataAccess
     ref int ReleasedByUserID, ref int ReleaseApplicationID)
 
         {
-            SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConntaionString);
-            string Query = @"select top 1* from DetainedLicenses WHERE DetainID = @DetainID order by desc DetainID ";
-
-            SqlCommand command = new SqlCommand(Query, connection);
-            command.Parameters.AddWithValue("@DetainID", DetainID);
-
-            bool ISfound = false;
-
-            try
+            using (SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConntaionString))
             {
-
-                connection.Open();
-
-                SqlDataReader reader = command.ExecuteReader();
-
-                if (reader.Read())
+                using (SqlCommand command = new SqlCommand("SP_GetDetainedLicenseInfoByID", connection))
                 {
-                    ISfound = true;
-                    LicenseID = (int)reader["LicenseID"];
-                    DetainDate = Convert.ToDateTime(reader["DetainDate"]);
-                    FineFees = Convert.ToSingle(reader["FineFees"]);
-                    CreatedByUserID = (int)reader["CreatedByUserID"];
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.AddWithValue("@DetainID", DetainID);
 
-                    if (reader["IsReleased"] != System.DBNull.Value)
-                        IsReleased = (bool)reader["IsReleased"];
-                    else
-                        IsReleased = false;
+                    bool ISfound = false;
 
-                    if (reader["ReleaseDate"] != System.DBNull.Value)
-                        ReleaseDate = Convert.ToDateTime(reader["ReleaseDate"]);
-                    else
-                        ReleaseDate = DateTime.MinValue;
+                    try
+                    {
 
-                    if (reader["ReleasedByUserID"] != System.DBNull.Value)
-                        ReleasedByUserID = (int)reader["ReleasedByUserID"];
-                    else
-                        ReleaseApplicationID = -1;
+                        connection.Open();
+
+                        using (SqlDataReader reader = command.ExecuteReader())
+                        {
+
+                            if (reader.Read())
+                            {
+                                ISfound = true;
+                                LicenseID = (int)reader["LicenseID"];
+                                DetainDate = Convert.ToDateTime(reader["DetainDate"]);
+                                FineFees = Convert.ToSingle(reader["FineFees"]);
+                                CreatedByUserID = (int)reader["CreatedByUserID"];
+
+                                if (reader["IsReleased"] != System.DBNull.Value)
+                                    IsReleased = (bool)reader["IsReleased"];
+                                else
+                                    IsReleased = false;
+
+                                if (reader["ReleaseDate"] != System.DBNull.Value)
+                                    ReleaseDate = Convert.ToDateTime(reader["ReleaseDate"]);
+                                else
+                                    ReleaseDate = DateTime.MinValue;
+
+                                if (reader["ReleasedByUserID"] != System.DBNull.Value)
+                                    ReleasedByUserID = (int)reader["ReleasedByUserID"];
+                                else
+                                    ReleaseApplicationID = -1;
+                            }
+                            else
+                            {
+                                ISfound = false;
+                            }
+                        }
+
+                    }
+                    catch (Exception ex)
+                    {
+                        ISfound = false;
+                    }
+
+                    return ISfound;
                 }
-                else
-                {
-                    ISfound = false;
-                }
-                reader.Close();
-
             }
-            catch (Exception ex)
-            {
-                ISfound = false;
-            }
-            finally
-            {
-                connection.Close();
-            }
-            return ISfound;
         }
 
         public static bool GetDetainedLicenseInfoByLicenseID(int LicenseID,
@@ -82,241 +83,235 @@ namespace SLDVLD_DataAccess
         {
             bool isFound = false;
 
-            SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConntaionString);
-
-            string query = "SELECT top 1 * FROM DetainedLicenses WHERE LicenseID = @LicenseID order by DetainID desc";
-
-            SqlCommand command = new SqlCommand(query, connection);
-
-            command.Parameters.AddWithValue("@LicenseID", LicenseID);
-
-            try
+            using (SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConntaionString))
             {
-                connection.Open();
-                SqlDataReader reader = command.ExecuteReader();
-
-                if (reader.Read())
+                using (SqlCommand command = new SqlCommand("SP_GetDetainedLicenseInfoByLicenseID", connection))
                 {
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.AddWithValue("@LicenseID", LicenseID);
 
-                    isFound = true;
+                    try
+                    {
+                        connection.Open();
+                        using (SqlDataReader reader = command.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
 
-                    DetainID = (int)reader["DetainID"];
-                    DetainDate = (DateTime)reader["DetainDate"];
-                    FineFees = Convert.ToSingle(reader["FineFees"]);
-                    CreatedByUserID = (int)reader["CreatedByUserID"];
+                                isFound = true;
 
-                    IsReleased = (bool)reader["IsReleased"];
+                                DetainID = (int)reader["DetainID"];
+                                DetainDate = (DateTime)reader["DetainDate"];
+                                FineFees = Convert.ToSingle(reader["FineFees"]);
+                                CreatedByUserID = (int)reader["CreatedByUserID"];
 
-                    if (reader["ReleaseDate"] == DBNull.Value)
+                                IsReleased = (bool)reader["IsReleased"];
 
-                        ReleaseDate = DateTime.MaxValue;
-                    else
-                        ReleaseDate = (DateTime)reader["ReleaseDate"];
+                                if (reader["ReleaseDate"] == DBNull.Value)
+
+                                    ReleaseDate = DateTime.MaxValue;
+                                else
+                                    ReleaseDate = (DateTime)reader["ReleaseDate"];
 
 
-                    if (reader["ReleasedByUserID"] == DBNull.Value)
+                                if (reader["ReleasedByUserID"] == DBNull.Value)
 
-                        ReleasedByUserID = -1;
-                    else
-                        ReleasedByUserID = (int)reader["ReleasedByUserID"];
+                                    ReleasedByUserID = -1;
+                                else
+                                    ReleasedByUserID = (int)reader["ReleasedByUserID"];
 
-                    if (reader["ReleaseApplicationID"] == DBNull.Value)
+                                if (reader["ReleaseApplicationID"] == DBNull.Value)
 
-                        ReleaseApplicationID = -1;
-                    else
-                        ReleaseApplicationID = (int)reader["ReleaseApplicationID"];
+                                    ReleaseApplicationID = -1;
+                                else
+                                    ReleaseApplicationID = (int)reader["ReleaseApplicationID"];
 
+                            }
+                            else
+                            {
+                                isFound = false;
+                            }
+
+                        }
+
+
+                    }
+                    catch (Exception ex)
+                    {
+                        isFound = false;
+                    }
+
+                    return isFound;
                 }
-                else
-                {
-                    isFound = false;
-                }
-
-                reader.Close();
-
-
             }
-            catch (Exception ex)
-            {
-                isFound = false;
-            }
-            finally
-            {
-                connection.Close();
-            }
-
-            return isFound;
         }
-
-        public static DataTable GetAllDetainedLicenses()
+        public static async Task<DataTable> GetAllDetainedLicenses()
         {
-            SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConntaionString);
-            string Query = "select * from DetainedLicenses_View";
-
-            SqlCommand command = new SqlCommand(Query, connection);
-
-            DataTable dt = new DataTable();
-
-            try
+            return await Task.Run(() =>
             {
-                connection.Open();
+                using (SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConntaionString))
+                {
 
-                SqlDataReader reader = command.ExecuteReader();
+                    using (SqlCommand command = new SqlCommand("SP_GetAllDetainedLicenses", connection))
+                    {
+                        command.CommandType = CommandType.StoredProcedure;
+                        DataTable dt = new DataTable();
 
-                if (reader.HasRows)
-                    dt.Load(reader);
+                        try
+                        {
+                            connection.Open();
 
-                reader.Close();
-            }
-            catch (Exception ex)
-            {
+                            using (SqlDataReader reader = command.ExecuteReader())
+                            {
 
-            }
-            finally
-            {
-                connection.Close();
-            }
-            return dt;
+                                if (reader.HasRows)
+                                    dt.Load(reader);
+
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+
+                        }
+
+                        return dt;
+                    }
+                }
+            });
         }
-
         public static int AddNewDetainedLicense(
                int LicenseID, DateTime DetainDate,
                float FineFees, int CreatedByUserID)
         {
-            SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConntaionString);
-
-            string Query = @"Insert Into DetainedLicenses (LicenseID,DetainDate,FineFees,CreatedByUserID)
-                            Values (@LicenseID,@DetainDate,@FineFees,@CreatedByUserID)
-                            select SCOPE_IDENTITY()";
-
-            SqlCommand command = new SqlCommand(Query, connection);
-            command.Parameters.AddWithValue("@LicenseID", LicenseID);
-            command.Parameters.AddWithValue("@DetainDate", DetainDate);
-            command.Parameters.AddWithValue("@FineFees", FineFees);
-            command.Parameters.AddWithValue("@CreatedByUserID", CreatedByUserID);
-            int DetainID = -1;
-
-            try
+            using (SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConntaionString))
             {
-                connection.Open();
 
-                object Reslut = command.ExecuteScalar();
 
-                if (Reslut != null && int.TryParse(Reslut.ToString(), out int InsertID))
+                using (SqlCommand command = new SqlCommand("SP_AddNewDetainedLicense", connection))
                 {
-                    DetainID = InsertID;
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.AddWithValue("@LicenseID", LicenseID);
+                    command.Parameters.AddWithValue("@DetainDate", DetainDate);
+                    command.Parameters.AddWithValue("@FineFees", FineFees);
+                    command.Parameters.AddWithValue("@CreatedByUserID", CreatedByUserID);
+                    int DetainID = -1;
+
+                    try
+                    {
+                        connection.Open();
+
+                        object Reslut = command.ExecuteScalar();
+
+                        if (Reslut != null && int.TryParse(Reslut.ToString(), out int InsertID))
+                        {
+                            DetainID = InsertID;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+
+                    }
+
+                    return DetainID;
                 }
             }
-            catch (Exception ex)
-            {
-
-            }
-            finally
-            {
-                connection.Close();
-            }
-            return DetainID;
         }
 
         public static bool UpdateDetainedLicense(int DetainID,
                 int LicenseID, DateTime DetainDate,
                 float FineFees, int CreatedByUserID)
         {
-            SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConntaionString);
-                string Query = @"Update DetainedLicenses Set LicenseID =@LicenseID ,DetainDate = @DetainDate,
-                                 FineFees = @FineFees ,CreatedByUserID = @CreatedByUserID 
-                                  WHERE DetainID = @DetainID";
+            using (SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConntaionString))
+            {
 
-            SqlCommand command = new SqlCommand(Query, connection);
-
-            command.Parameters.AddWithValue("@DetainID", DetainID);
-            command.Parameters.AddWithValue("@CreatedByUserID", CreatedByUserID);
-            command.Parameters.AddWithValue("@FineFees", FineFees);
-            command.Parameters.AddWithValue("@DetainDate", DetainDate);
-            command.Parameters.AddWithValue("@LicenseID", LicenseID);
-
-            int RowAffected = 0;
-            try
+                using (SqlCommand command = new SqlCommand("SP_UpdateDetainedLicense", connection))
                 {
-                connection.Open();
-                RowAffected = command.ExecuteNonQuery();
+                    command.Parameters.AddWithValue("@DetainID", DetainID);
+                    command.Parameters.AddWithValue("@CreatedByUserID", CreatedByUserID);
+                    command.Parameters.AddWithValue("@FineFees", FineFees);
+                    command.Parameters.AddWithValue("@DetainDate", DetainDate);
+                    command.Parameters.AddWithValue("@LicenseID", LicenseID);
 
-            }
-            catch (Exception ex)
-            {
+                    int RowAffected = 0;
+                    try
+                    {
+                        connection.Open();
+                        RowAffected = command.ExecuteNonQuery();
 
+                    }
+                    catch (Exception ex)
+                    {
+
+                    }
+
+                    return RowAffected > 0;
+                }
             }
-            finally
-            {
-                connection.Close();
-            }
-            return RowAffected > 0;
         }
 
         public static bool ReleaseDetainedLicense(int DetainID,
                  int ReleasedByUserID, int ReleaseApplicationID)
         {
-            SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConntaionString);
-            string Query = @"Update DetainedLicenses Set ReleaseApplicationID =@ReleaseApplicationID,ReleasedByUserID =@ReleasedByUserID,
-                             IsReleased = 1,ReleaseDate = @ReleaseDate  
-                             WHERE DetainID  =@DetainID";
-
-            SqlCommand command = new SqlCommand(Query, connection);
-            command.Parameters.AddWithValue("@DetainID", DetainID);
-            command.Parameters.AddWithValue("@ReleaseApplicationID", ReleaseApplicationID);
-            command.Parameters.AddWithValue("@ReleasedByUserID", ReleasedByUserID);
-            command.Parameters.AddWithValue("@ReleaseDate", DateTime.Now);
-
-
-            int RowAffected = 0;
-            try
-            {
-                connection.Open();
-                RowAffected = command.ExecuteNonQuery();
-
-            }
-            catch (Exception ex)
+            using (SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConntaionString))
             {
 
-            }
-            finally
-            {
-                connection.Close();
-            }
-            return RowAffected > 0;
-        }
-
-        public static bool IsLicenseDetained(int LicenseID)
-        {
-            SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConntaionString);
-            string Query = @"select IsDetained = 1 from DetainedLicenses 
-                 Where LicenseID  = @LicenseID And IsReleased =0";
-
-            SqlCommand command = new SqlCommand(Query,connection);
-            command.Parameters.AddWithValue("@LicenseID", LicenseID);
-
-            bool IsDetained = false;
-
-            try
-            {
-                connection.Open();
-
-                object result = command.ExecuteScalar();
-
-                if (result != null)
+                using (SqlCommand command = new SqlCommand("SP_ISReleaseDetainedLicense", connection))
                 {
-                    IsDetained = Convert.ToBoolean(result);
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    command.Parameters.AddWithValue("@DetainID", DetainID);
+                    command.Parameters.AddWithValue("@ReleaseApplicationID", ReleaseApplicationID);
+                    command.Parameters.AddWithValue("@ReleasedByUserID", ReleasedByUserID);
+                    command.Parameters.AddWithValue("@ReleaseDate", DateTime.Now);
+
+
+                    int RowAffected = 0;
+                    try
+                    {
+                        connection.Open();
+                        RowAffected = command.ExecuteNonQuery();
+
+                    }
+                    catch (Exception ex)
+                    {
+
+                    }
+
+                    return RowAffected > 0;
                 }
             }
-            catch (Exception ex)
+        }
+        public static bool IsLicenseDetained(int LicenseID)
+        {
+            using (SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConntaionString))
             {
-                IsDetained = false;
+
+                using (SqlCommand command = new SqlCommand("SP_IsLicenseDetained", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.AddWithValue("@LicenseID", LicenseID);
+
+                    bool IsDetained = false;
+
+                    try
+                    {
+                        connection.Open();
+
+                        object result = command.ExecuteScalar();
+
+                        if (result != null)
+                        {
+                            IsDetained = Convert.ToBoolean(result);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        IsDetained = false;
+                    }
+
+                    return IsDetained;
+                }
             }
-            finally
-            {
-                connection.Close();
-            }
-            return IsDetained;
         }
     }
 }

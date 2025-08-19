@@ -12,133 +12,133 @@ namespace SLDVLD_DataAccess
     {
         public static bool GetApplicationTypeIInfoByID(int ApplicationTypeID, ref string ApplicationTypeTitle, ref float ApplicationFees)
         {
-            SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConntaionString);
-            string Qurey = "Select * from ApplicationTypes Where ApplicationTypeID =@ApplicationTypeID";
-
-            SqlCommand command = new SqlCommand(Qurey, connection);
-           command.Parameters.AddWithValue("@ApplicationTypeID", ApplicationTypeID);
-
-            bool ISFound = false;
-
-            try
+            using (SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConntaionString))
             {
-                connection.Open();
-                SqlDataReader reader = command.ExecuteReader();
-                if (reader.Read())
+                using (SqlCommand command = new SqlCommand("SP_GetApplicationTypeIInfoByID", connection))
                 {
-                    ISFound = true;
-                    ApplicationTypeTitle = (string)reader["ApplicationTypeTitle"];
-                    ApplicationFees = Convert.ToSingle( reader["ApplicationFees"]);
-                }
-                else
-                {
-                    ISFound = false;
-                }
-                reader.Close();
-            }
-            catch (Exception ex)
-            {
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.AddWithValue("@ApplicationTypeID", ApplicationTypeID);
 
+                    bool ISFound = false;
+
+                    try
+                    {
+                        connection.Open();
+                        using (SqlDataReader reader = command.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                ISFound = true;
+                                ApplicationTypeTitle = (string)reader["ApplicationTypeTitle"];
+                                ApplicationFees = Convert.ToSingle(reader["ApplicationFees"]);
+                            }
+                            else
+                            {
+                                ISFound = false;
+                            }
+
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+
+                    }
+                    return ISFound;
+                }
             }
-            finally
-            {
-                connection.Close();
-            }
-            return ISFound;
         }
-       
-        public static DataTable GetAllApplicationTypes()
+
+        public static async Task<DataTable> GetAllApplicationTypes()
         {
-            SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConntaionString);
-
-            string Qurey = "Select * from ApplicationTypes order by ApplicationTypeTitle";
-
-            SqlCommand command = new SqlCommand(Qurey,connection);
-
             DataTable dt = new DataTable();
-            try
+            return await Task.Run(() =>
             {
-                connection.Open();
-                SqlDataReader reader = command.ExecuteReader();
-
-                if (reader.HasRows)
-                    dt.Load(reader);
-            }
-            catch (Exception ex)
-            {
-
-            }
-            finally
-            {
-                connection.Close();
-            }
-            return dt;
-        }
-    
-        public static int AddNewApplicationType(string Title,float Fess)
-        {
-            SqlConnection connectio = new SqlConnection(clsDataAccessSettings.ConntaionString);
-
-            string Qury = @"Insert Into ApplicationTypes (ApplicationTypeTitle ,ApplicationFees)  
-                Values (@ApplicationTypeTitle ,@ApplicationFees)            
-                select SCOPE_IDENTITY();";
-
-                SqlCommand command = new SqlCommand(Qury,connectio);
-               
-              command.Parameters.AddWithValue("@ApplicationFees",Fess);
-              command.Parameters.AddWithValue("@ApplicationTypeTitle",Title);
-
-            int Add = -1;
-            try
-            {
-                connectio.Open();
-                object Addrow = command.ExecuteScalar();
-
-                if(Addrow != null && int.TryParse(Addrow.ToString(),out int AddNew))
+                using (SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConntaionString))
                 {
-                    Add = AddNew; 
+
+                    using (SqlCommand command = new SqlCommand("SP_GetAllApplicationTypes", connection))
+                    {
+                        command.CommandType = CommandType.StoredProcedure;
+                        
+                        try
+                        {
+                            connection.Open();
+                            using (SqlDataReader reader = command.ExecuteReader())
+                            {
+
+                                if (reader.HasRows)
+                                    dt.Load(reader);
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+
+                        }
+
+                        
+                    }
+                }
+                return dt;
+            });
+        }
+        public static int AddNewApplicationType(string Title, float Fess)
+        {
+            using (SqlConnection connectio = new SqlConnection(clsDataAccessSettings.ConntaionString))
+            {
+                using (SqlCommand command = new SqlCommand("SP_AddNewApplicationType", connectio))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.AddWithValue("@ApplicationFees", Fess);
+                    command.Parameters.AddWithValue("@ApplicationTypeTitle", Title);
+
+                    int Add = -1;
+                    try
+                    {
+                        connectio.Open();
+                        object Addrow = command.ExecuteScalar();
+
+                        if (Addrow != null && int.TryParse(Addrow.ToString(), out int AddNew))
+                        {
+                            Add = AddNew;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+
+                    }
+
+                    return Add;
                 }
             }
-            catch(Exception  ex)
-            {
-
-            }
-            finally
-            {
-                connectio.Close();
-            }
-            return Add;
         }
-
-        public static bool  UpdateApplicationType(int ApplicationTypeID,string ApplicationTypeTitle,float ApplicationFees)
+        public static bool UpdateApplicationType(int ApplicationTypeID, string ApplicationTypeTitle, float ApplicationFees)
         {
-            SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConntaionString);
-
-            string Qurey = @"Update ApplicationTypes Set ApplicationTypeTitle =@ApplicationTypeTitle,ApplicationFees =@ApplicationFees
-                              Where ApplicationTypeID =@ApplicationTypeID";
-
-            SqlCommand command = new SqlCommand(Qurey,connection);
-            command.Parameters.AddWithValue("@ApplicationTypeID", ApplicationTypeID);
-            command.Parameters.AddWithValue("@ApplicationTypeTitle", ApplicationTypeTitle);
-            command.Parameters.AddWithValue("@ApplicationFees", ApplicationFees);
-
-            int RowAffected = 0;
-
-            try
-            {
-                connection.Open();
-
-                RowAffected = command.ExecuteNonQuery();
-            }
-            catch(Exception ex)
+            using (SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConntaionString))
             {
 
+                using (SqlCommand command = new SqlCommand("SP_UpdateApplicationType", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.AddWithValue("@ApplicationTypeID", ApplicationTypeID);
+                    command.Parameters.AddWithValue("@ApplicationTypeTitle", ApplicationTypeTitle);
+                    command.Parameters.AddWithValue("@ApplicationFees", ApplicationFees);
+
+                    int RowAffected = 0;
+
+                    try
+                    {
+                        connection.Open();
+
+                        RowAffected = command.ExecuteNonQuery();
+                    }
+                    catch (Exception ex)
+                    {
+
+                    }
+
+                    return RowAffected > 0;
+                }
             }
-            finally
-            {
-                connection.Close();
-            }
-            return RowAffected > 0;
         }
     }
 }

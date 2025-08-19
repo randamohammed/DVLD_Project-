@@ -29,5 +29,10 @@ namespace DVLDSluotion
         {
             this.Close();
         }
+
+        private void frmShowPerson_Load(object sender, EventArgs e)
+        {
+
+        }
     }
 }

@@ -17,21 +17,33 @@ namespace DVLDSluotion
         {
             InitializeComponent();
         }
-
-        DataTable dtApplicationType;
+        List<clsAppplicationType> AllAppplicationType = new List<clsAppplicationType>();
         private void editAppplicationTypeToolStripMenuItem_Click(object sender, EventArgs e)
         {
             int ApplicationTypeID = (int)dvApplicationTypes.CurrentRow.Cells[0].Value;
             frmEditApplicationType frm = new frmEditApplicationType(ApplicationTypeID);
+            frm.UpdateApplicationType += UpdateApplicationType;
             frm.ShowDialog();
-            frmLastApplicationType_Load(null,null);
+         
         }
 
-        private void frmLastApplicationType_Load(object sender, EventArgs e)
+        private void UpdateApplicationType(clsAppplicationType appplicationType)
         {
-            dtApplicationType = clsAppplicationType.GetAllApplicationnTypes();
+           for(int i = 0; i < AllAppplicationType.Count; i++)
+            {
+                if(AllAppplicationType[i].ApplicationTypeIID == appplicationType.ApplicationTypeIID)
+                {
+                    AllAppplicationType[i].Title = appplicationType.Title;
+                    AllAppplicationType[i].Fees = appplicationType.Fees;
+                }
+            }
+        }
 
-            dvApplicationTypes.DataSource = dtApplicationType;
+        private async void frmLastApplicationType_Load(object sender, EventArgs e)
+        {
+            AllAppplicationType = await clsAppplicationType.GetAllApplicationnTypesInList();
+
+            dvApplicationTypes.DataSource = AllAppplicationType;
             lbRecorde.Text = dvApplicationTypes .RowCount.ToString();
 
             if(dvApplicationTypes.Rows.Count > 0 )

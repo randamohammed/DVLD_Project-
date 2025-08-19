@@ -1,4 +1,5 @@
-﻿using SLDVLD_Buisness;
+﻿using DVLDSluotion.Licenses.International_License;
+using SLDVLD_Buisness;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -19,12 +20,14 @@ namespace DVLDSluotion.Licenses.Controls
         }
 
         DataTable _dtDriverLocalLicenes;
-        DataTable _dtDriverInternationalLicenes;
+        List<DriverInternationalLicensesViewModel> _dtDriverInternationalLicenes;
         int _DriverID = 0;
+        int Personid = 0;
+        int DriverId = 0;
         clsDriver _Driver;
-        private void _LoadInternationalLicenseInfo()
+        private async void _LoadInternationalLicenseInfo()
         {
-            _dtDriverInternationalLicenes = clsInternationalLicense.GetDriverInternationalLicenses(_DriverID);
+            _dtDriverInternationalLicenes =await DriverInternationalLicensesViewModel.GetDriverInternationalLicensesINList(_DriverID);
             dgInternationalLicenses.DataSource = _dtDriverInternationalLicenes;
                 lbinternationalRecorde.Text = dgInternationalLicenses.RowCount.ToString();
 
@@ -76,9 +79,9 @@ namespace DVLDSluotion.Licenses.Controls
             _LoadLocalLicenseInfo();
         }
 
-        private void _LoadLocalLicenseInfo()
+        private async void _LoadLocalLicenseInfo()
         {
-            _dtDriverLocalLicenes = clsDriver.GetLicenses(_DriverID);
+            _dtDriverLocalLicenes =await clsDriver.GetLicenses(_DriverID);
             dgLocalDriverLicenesHisory.DataSource = _dtDriverLocalLicenes;
             lbLocalRecorde.Text = dgLocalDriverLicenesHisory.RowCount.ToString();
 
@@ -136,5 +139,21 @@ namespace DVLDSluotion.Licenses.Controls
         {
 
         }
+
+        private void showLicenesInfoToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+          int  LicesID =(int) dgLocalDriverLicenesHisory.CurrentRow.Cells[0].Value;
+            frmShowLicenseInfo frm = new frmShowLicenseInfo(LicesID);
+            frm.ShowDialog();
+        }
+
+        private void showLicenesInfoToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+             DriverId = (int)dgInternationalLicenses.CurrentRow.Cells[0].Value;
+            frmShowInternationalLicenseInfo frm = new frmShowInternationalLicenseInfo(DriverId);
+            frm.ShowDialog();
+        }
+
+        
     }
 }

@@ -83,9 +83,9 @@ namespace SLDVLD_Buisness
         {
             return clsDriverData.GetAllDrivers();
         }
-        public static DataTable GetLicenses(int DriverID)
+        public static async Task<DataTable> GetLicenses(int DriverID)
         {
-            return clsLicenes.GetDriverLicenses(DriverID);
+            return await clsLicenes.GetDriverLicenses(DriverID);
         }
         public bool Save()
         {

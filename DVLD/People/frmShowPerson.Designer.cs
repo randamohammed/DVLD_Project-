@@ -77,6 +77,7 @@
             this.MinimizeBox = false;
             this.Name = "frmShowPerson";
             this.Text = "Show Person Info";
+            this.Load += new System.EventHandler(this.frmShowPerson_Load);
             this.ResumeLayout(false);
 
         }

@@ -394,38 +394,43 @@ namespace SLDVLD_DataAccess
             return ISFound;
         }
 
-        public   static DataTable GetAllUsers()
+        public static async Task<DataTable> GetAllUsers()
         {
-            //return await Task.Run(() =>
-            
             DataTable dt = new DataTable();
 
-            using (SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConntaionString))
+            return await Task.Run(() =>
             {
-                using (SqlCommand command = new SqlCommand("SP_GetAllUsers", connection))
+               
+
+
+                using (SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConntaionString))
                 {
-                    command.CommandType = CommandType.StoredProcedure;
-                    try
+                    using (SqlCommand command = new SqlCommand("SP_GetAllUsers", connection))
                     {
-                        connection.Open();
-                        using (SqlDataReader reader = command.ExecuteReader())
+                        command.CommandType = CommandType.StoredProcedure;
+                        try
                         {
-                            if (reader.HasRows)
+                            connection.Open();
+                            using (SqlDataReader reader = command.ExecuteReader())
                             {
-                                dt.Load(reader);
+                                if (reader.HasRows)
+                                {
+                                    dt.Load(reader);
+                                }
                             }
                         }
+                        catch (Exception ex)
+                        {
+                            // هذا مهم جداً لتشخيص أي أخطاء في المستقبل
+                            Console.WriteLine("Data Access Error: " + ex.Message);
+                        }
                     }
-                    catch (Exception ex)
-                    {
-                        // هذا مهم جداً لتشخيص أي أخطاء في المستقبل
-                        Console.WriteLine("Data Access Error: " + ex.Message);
-                    }
+
                 }
                 return dt;
-            }
-                
-            
+
+
+            });
         }
     }
 }

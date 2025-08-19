@@ -205,7 +205,7 @@
             "All",
             "Yes",
             "No"});
-            this.cmISActive.Location = new System.Drawing.Point(247, 163);
+            this.cmISActive.Location = new System.Drawing.Point(247, 162);
             this.cmISActive.Name = "cmISActive";
             this.cmISActive.Size = new System.Drawing.Size(139, 28);
             this.cmISActive.TabIndex = 9;

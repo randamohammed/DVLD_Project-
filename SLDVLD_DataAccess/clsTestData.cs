@@ -14,73 +14,79 @@ namespace SLDVLD_DataAccess
          ref int TestAppointmentID, ref bool TestResult,
          ref string Notes, ref int CreatedByUserID)
         {
-            SqlConnection Connection = new SqlConnection(clsDataAccessSettings.ConntaionString);
-            string Query = "Select * from Tests WHERE TestID = @TestID";
-
-            SqlCommand command = new SqlCommand(Query, Connection);
-            command.Parameters.AddWithValue("@TestID", TestID);
-
-            bool ISFound = false;
-
-            try
+            using (SqlConnection Connection = new SqlConnection(clsDataAccessSettings.ConntaionString))
             {
-                Connection.Open();
-                SqlDataReader reader = command.ExecuteReader();
-                if (reader.Read())
+                using (SqlCommand command = new SqlCommand("SP_GetTestInfoByID", Connection))
                 {
-                    ISFound = true;
-                    TestAppointmentID = (int)reader["TestAppointmentID"];
-                    CreatedByUserID = (int)reader["CreatedByUserID"];
-                    TestResult = (bool)reader["TestResult"];
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.AddWithValue("@TestID", TestID);
 
-                    if(reader["Notes"] == System.DBNull.Value)
-                      Notes = "";
-                    else
-                      Notes = (string)reader["Notes"];
+                    bool ISFound = false;
+
+                    try
+                    {
+                        Connection.Open();
+                        using (SqlDataReader reader = command.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                ISFound = true;
+                                TestAppointmentID = (int)reader["TestAppointmentID"];
+                                CreatedByUserID = (int)reader["CreatedByUserID"];
+                                TestResult = (bool)reader["TestResult"];
+
+                                if (reader["Notes"] == System.DBNull.Value)
+                                    Notes = "";
+                                else
+                                    Notes = (string)reader["Notes"];
+                            }
+                            else
+                                ISFound = false;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                    }
+
+                    return ISFound;
                 }
-                else
-                    ISFound = false;
-                reader.Close();
             }
-            catch (Exception ex)
-            {
-            }
-            finally
-            {
-                Connection.Close();
-            }
-            return ISFound;
         }
 
-        public static DataTable GetAllTests()
+        public static async Task< DataTable> GetAllTests()
         {
-            DataTable dt = new DataTable();
-            SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConntaionString);
-            string Query = "SELECT * FROM Tests";
-
-            SqlCommand command = new SqlCommand(Query, connection);
-            try
+            return await Task.Run(() =>
             {
-                connection.Open();
-                SqlDataReader reader = command.ExecuteReader();
-
-                if (reader.HasRows)
+                DataTable dt = new DataTable();
+                using (SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConntaionString))
                 {
-                    dt.Load(reader);
+                    using (SqlCommand command = new SqlCommand("SP_GetAllTests", connection))
+                    {
+                        command.CommandType = CommandType.StoredProcedure;
+                        try
+                        {
+                            connection.Open();
+                            using (SqlDataReader reader = command.ExecuteReader())
+                            {
+
+                                if (reader.HasRows)
+                                {
+                                    dt.Load(reader);
+                                }
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+
+                        }
+
+                        return dt;
+
+                    }
                 }
-                reader.Close();
-            }
-            catch (Exception ex)
-            {
-
-            }
-            finally
-            {
-                connection.Close();
-            }
-            return dt;
-
+            });
         }
+    
 
         public static bool GetLastTestByPersonAndTestTypeAndLicenseClass
            (int PersonID, int LicenseClassID, int TestTypeID, ref int TestID,
@@ -159,58 +165,44 @@ namespace SLDVLD_DataAccess
         {
             int TestID = -1;
 
-            SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConntaionString);
-
-            string query = @"Insert Into Tests (TestAppointmentID,TestResult,
-                                                Notes,   CreatedByUserID)
-                            Values (@TestAppointmentID,@TestResult,
-                                                @Notes,   @CreatedByUserID);
-                            
-                                UPDATE TestAppointments 
-                                SET IsLocked=1 where TestAppointmentID = @TestAppointmentID;
-
-                                SELECT SCOPE_IDENTITY();";
-
-            SqlCommand command = new SqlCommand(query, connection);
-
-            command.Parameters.AddWithValue("@TestAppointmentID", TestAppointmentID);
-            command.Parameters.AddWithValue("@TestResult", TestResult);
-
-            if (Notes != "" && Notes != null)
-                command.Parameters.AddWithValue("@Notes", Notes);
-            else
-                command.Parameters.AddWithValue("@Notes", System.DBNull.Value);
-
-
-
-            command.Parameters.AddWithValue("@CreatedByUserID", CreatedByUserID);
-
-            try
+            using (SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConntaionString))
             {
-                connection.Open();
-
-                object result = command.ExecuteScalar();
-
-                if (result != null && int.TryParse(result.ToString(), out int insertedID))
+                using (SqlCommand command = new SqlCommand("SP_AddNewTest", connection))
                 {
-                    TestID = insertedID;
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    command.Parameters.AddWithValue("@TestAppointmentID", TestAppointmentID);
+                    command.Parameters.AddWithValue("@TestResult", TestResult);
+
+                    if (Notes != "" && Notes != null)
+                        command.Parameters.AddWithValue("@Notes", Notes);
+                    else
+                        command.Parameters.AddWithValue("@Notes", System.DBNull.Value);
+
+
+
+                    command.Parameters.AddWithValue("@CreatedByUserID", CreatedByUserID);
+
+                    try
+                    {
+                        connection.Open();
+
+                        object result = command.ExecuteScalar();
+
+                        if (result != null && int.TryParse(result.ToString(), out int insertedID))
+                        {
+                            TestID = insertedID;
+                        }
+                    }
+
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine("Error: " + ex.Message);
+ 
+                    }
+                    return TestID;
                 }
             }
-
-            catch (Exception ex)
-            {
-                //Console.WriteLine("Error: " + ex.Message);
-
-            }
-
-            finally
-            {
-                connection.Close();
-            }
-
-
-            return TestID;
-
         }
 
         public static bool UpdateTest(int TestID, int TestAppointmentID, bool TestResult,
@@ -218,95 +210,72 @@ namespace SLDVLD_DataAccess
         {
 
             int rowsAffected = 0;
-            SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConntaionString);
-
-            string query = @"Update  Tests  
-                            set TestAppointmentID = @TestAppointmentID,
-                                TestResult=@TestResult,
-                                Notes = @Notes,
-                                CreatedByUserID=@CreatedByUserID
-                                where TestID = @TestID";
-
-            SqlCommand command = new SqlCommand(query, connection);
-
-            command.Parameters.AddWithValue("@TestID", TestID);
-            command.Parameters.AddWithValue("@TestAppointmentID", TestAppointmentID);
-            command.Parameters.AddWithValue("@TestResult", TestResult);
-
-            if(Notes == "")
-               command.Parameters.AddWithValue("@Notes", System.DBNull.Value);
-            else
-               command.Parameters.AddWithValue("@Notes", Notes);
-            command.Parameters.AddWithValue("@CreatedByUserID", CreatedByUserID);
-
-            try
+            using (SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConntaionString))
             {
-                connection.Open();
-                rowsAffected = command.ExecuteNonQuery();
+                using (SqlCommand command = new SqlCommand("SP_UpdateTest", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
 
-            }
-            catch (Exception ex)
-            {
-                //Console.WriteLine("Error: " + ex.Message);
-                return false;
-            }
+                    command.Parameters.AddWithValue("@TestID", TestID);
+                    command.Parameters.AddWithValue("@TestAppointmentID", TestAppointmentID);
+                    command.Parameters.AddWithValue("@TestResult", TestResult);
 
-            finally
-            {
-                connection.Close();
-            }
+                    if (Notes == "")
+                        command.Parameters.AddWithValue("@Notes", System.DBNull.Value);
+                    else
+                        command.Parameters.AddWithValue("@Notes", Notes);
+                    command.Parameters.AddWithValue("@CreatedByUserID", CreatedByUserID);
 
-            return (rowsAffected > 0);
-       
-        
+                    try
+                    {
+                        connection.Open();
+                        rowsAffected = command.ExecuteNonQuery();
+
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine("Error: " + ex.Message);
+                        return false;
+                    }
+
+                    return (rowsAffected > 0);
+                }
+            }
         }
 
         public static byte GetPassedTestCount(int LocalDrivingLicenseApplicationID)
         {
             byte PassedTestCount = 0;
 
-            SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConntaionString);
-
-            string query = @"SELECT PassedTestCount = count(TestTypeID)
-                         FROM Tests INNER JOIN
-                         TestAppointments ON Tests.TestAppointmentID = TestAppointments.TestAppointmentID
-						 where LocalDrivingLicenseApplicationID =@LocalDrivingLicenseApplicationID and TestResult=1";
-
-            SqlCommand command = new SqlCommand(query, connection);
-
-            command.Parameters.AddWithValue("@LocalDrivingLicenseApplicationID", LocalDrivingLicenseApplicationID);
-
-
-            try
+            using (SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConntaionString))
             {
-                connection.Open();
-
-                object result = command.ExecuteScalar();
-
-                if (result != null && byte.TryParse(result.ToString(), out byte ptCount))
+                using (SqlCommand command = new SqlCommand("SP_GetPassedTestCount", connection))
                 {
-                    PassedTestCount = ptCount;
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.AddWithValue("@LocalDrivingLicenseApplicationID", LocalDrivingLicenseApplicationID);
+                    try
+                    {
+                        connection.Open();
+
+                        object result = command.ExecuteScalar();
+
+                        if (result != null && byte.TryParse(result.ToString(), out byte ptCount))
+                        {
+                            PassedTestCount = ptCount;
+                        }
+                    }
+
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine("Error: " + ex.Message);
+                    }
+
+                    return PassedTestCount;
+
                 }
             }
 
-            catch (Exception ex)
-            {
-                //Console.WriteLine("Error: " + ex.Message);
-
-            }
-
-            finally
-            {
-                connection.Close();
-            }
-
-            return PassedTestCount;
-
-
-
         }
-
-
 
     }
 }

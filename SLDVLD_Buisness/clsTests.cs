@@ -99,9 +99,9 @@ namespace SLDVLD_Buisness
 
         }
 
-        public static DataTable GetAllTests()
+        public static async Task<DataTable> GetAllTests()
         {
-            return clsTestData.GetAllTests();
+            return await clsTestData.GetAllTests();
 
         }
 

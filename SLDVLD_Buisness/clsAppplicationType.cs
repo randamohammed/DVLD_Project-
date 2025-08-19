@@ -10,9 +10,10 @@ namespace SLDVLD_Buisness
 {
     public   class clsAppplicationType
     {
-        public string Title {  get; set; }
+        
         public int ApplicationTypeIID {  get; set; }
-       public float Fees { get; set; }
+        public string Title { get; set; }
+        public float Fees { get; set; }
 
         enum eMoode { AddNew =0,Update =1};
         eMoode Moode;
@@ -58,9 +59,26 @@ namespace SLDVLD_Buisness
         {
             return clsApplicationTypeData.UpdateApplicationType(this.ApplicationTypeIID,this.Title,this.Fees);
         }
-        public static DataTable GetAllApplicationnTypes()
+        public static async Task< DataTable> GetAllApplicationnTypes()
         {
-            return clsApplicationTypeData.GetAllApplicationTypes();
+            return await clsApplicationTypeData.GetAllApplicationTypes();
+        }
+
+        public static async Task<List<clsAppplicationType>> GetAllApplicationnTypesInList()
+        {
+            DataTable table =await GetAllApplicationnTypes();
+
+            List<clsAppplicationType> list = new List<clsAppplicationType>();
+            foreach(DataRow row in table.Rows)
+            {
+                clsAppplicationType AppplicationType = clsAppplicationType.Find((int)row["ApplicationTypeID"]);
+
+                if(AppplicationType != null )
+                {
+                    list.Add(AppplicationType);
+                }
+            }
+            return  list;
         }
 
         public bool Save()

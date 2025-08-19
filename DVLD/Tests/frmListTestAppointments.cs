@@ -32,8 +32,8 @@ namespace DVLDSluotion
         {
             _LoadTestTypeImageAndTitle();
 
-            ctrlDrivingLicenseApplicationInfo1.LoadApplicationInfoByLocalDrivingAppID(_LocalDrivingLicenseApplicationID);
-            dtAllTestAppointments = clsTestAppointment.GetApplicationTestAppointmentsPerTestType(_LocalDrivingLicenseApplicationID, _TestTypeID);
+          //ctrlDrivingLicenseApplicationInfo1.LoadApplicationInfoByLocalDrivingAppID(_LocalDrivingLicenseApplicationID);
+        //  dtAllTestAppointments = clsTestAppointment.GetApplicationTestAppointmentsPerTestType(_LocalDrivingLicenseApplicationID, _TestTypeID);
             dgvLicenseTestAppointments.DataSource = dtAllTestAppointments;
             lbRecorde.Text = dgvLicenseTestAppointments.RowCount.ToString();
 

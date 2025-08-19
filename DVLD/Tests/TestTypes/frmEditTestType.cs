@@ -18,6 +18,10 @@ namespace DVLDSluotion
             InitializeComponent();
             _TestTypeID = TestTypeID;
         }
+
+        public delegate void OnupdateTestType(clsTestTypes testTypes);
+        public event OnupdateTestType UpdateTestType;
+
         clsTestTypes.enTestType _TestTypeID = clsTestTypes.enTestType.VisionTes;
         clsTestTypes _TestType;
         private void frmEditTestType_Load(object sender, EventArgs e)
@@ -55,6 +59,7 @@ namespace DVLDSluotion
             _TestType.Fees =Convert.ToInt32( txtFees.Text);
             if(_TestType.Save())
             {
+                UpdateTestType.Invoke(_TestType);
                 MessageBox.Show("Update Date successfully", "Updateed", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             else

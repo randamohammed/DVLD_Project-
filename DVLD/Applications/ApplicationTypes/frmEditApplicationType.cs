@@ -19,6 +19,9 @@ namespace DVLDSluotion
             this.ApplicationTypeID = ApplicationTypeID;
         }
 
+        public delegate void onEditApplicationType(clsAppplicationType appplicationType);
+        public event onEditApplicationType UpdateApplicationType;
+
         clsAppplicationType AppplicationType;
         int ApplicationTypeID = -1;
         private void btClsoe_Click(object sender, EventArgs e)
@@ -94,6 +97,7 @@ namespace DVLDSluotion
             if(AppplicationType.Save())
             {
                 MessageBox.Show("Date Save Successfully","Saved",MessageBoxButtons.OK, MessageBoxIcon.Information);
+                UpdateApplicationType.Invoke(AppplicationType);
             }
             else
                 MessageBox.Show("Error: Data Is not Saved Successfully.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);

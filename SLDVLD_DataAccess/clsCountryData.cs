@@ -10,109 +10,113 @@ namespace SLDVLD_DataAccess
 {
     public class clsCountryData
     {
-        public static DataTable GetAllCountries()
+        public static async Task< DataTable> GetAllCountries()
         {
-            DataTable dt = new DataTable();
-
-            SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConntaionString);
-            string Qurey = "Select *from Countries order by CountryName";
-            SqlCommand command = new SqlCommand(Qurey, connection);
-
-            try
+            return  await Task.Run(() =>
             {
-                connection.Open();
-                SqlDataReader reader = command.ExecuteReader();
+                DataTable dt = new DataTable();
 
-                if (reader.HasRows)
-                    dt.Load(reader);
+                using (SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConntaionString))
+                {
+                    using (SqlCommand command = new SqlCommand("SP_GetAllCountries", connection))
+                    {
+                        command.CommandType = CommandType.StoredProcedure;
+                        try
+                        {
+                            connection.Open();
+                            using (SqlDataReader reader = command.ExecuteReader())
+                            {
 
-                reader.Close();
-            }
-            catch (Exception ex)
-            {
+                                if (reader.HasRows)
+                                    dt.Load(reader);
 
-            }
-            finally
-            {
-                connection.Close();
-            }
-            return dt;  
+                            }
+                        }
+                        catch (Exception ex)
+                        {
 
+                        }
+
+                        return dt;
+                    }
+                }
+            });
         }
+    
+
 
         public static bool FindCountryByID(int CountryID   ,ref string CountryName)
         {
-            SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConntaionString);
-            string Qurey = "select * from Countries Where CountryID =@CountryID";
-            SqlCommand command = new SqlCommand(Qurey , connection);
-
-            command.Parameters.AddWithValue("@CountryID", CountryID);
-
-            bool ISFound =false;
-
-            try
+            using (SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConntaionString))
             {
-                connection.Open();
-                SqlDataReader reader = command.ExecuteReader();
-
-                if (reader.Read())
+                using (SqlCommand command = new SqlCommand("SP_FindCountryByID", connection))
                 {
-                    ISFound = true;
-                    CountryName = (string)reader["CountryName"];
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.AddWithValue("@CountryID", CountryID);
+
+                    bool ISFound = false;
+
+                    try
+                    {
+                        connection.Open();
+                        using (SqlDataReader reader = command.ExecuteReader())
+                        {
+
+                            if (reader.Read())
+                            {
+                                ISFound = true;
+                                CountryName = (string)reader["CountryName"];
+                            }
+                            else
+                                ISFound = false;
+
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        ISFound = false;
+
+                    }
+
+                    return ISFound;
                 }
-                else
-                    ISFound = false;
-
-                reader.Close();
             }
-            catch(Exception ex) 
-            {
-                ISFound = false;
-
-            }
-            finally
-            {
-                connection.Close();
-            }
-            return ISFound;
-        }
-
-        public static bool FindCountryByNam(string CountryName,ref int CountryID)
+                }
+        public static bool FindCountryByNam(string CountryName, ref int CountryID)
         {
-            SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConntaionString);
-            string Qurey = "select * from Countries Where CountryName =@CountryName";
-            SqlCommand command = new SqlCommand(Qurey, connection);
-
-            command.Parameters.AddWithValue("@CountryName", CountryName);
-
-            bool ISFound = false;
-
-            try
+            using (SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConntaionString))
             {
-                connection.Open();
-                SqlDataReader reader = command.ExecuteReader();
-
-                if (reader.Read())
+                using (SqlCommand command = new SqlCommand("SP_FindCountryByNam", connection))
                 {
-                    ISFound = true;
-                    CountryID = (int)reader["CountryID"];
+                    command.CommandType  = CommandType.StoredProcedure;
+                    command.Parameters.AddWithValue("@CountryName", CountryName);
+
+                    bool ISFound = false;
+
+                    try
+                    {
+                        connection.Open();
+                        using (SqlDataReader reader = command.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                ISFound = true;
+                                CountryID = (int)reader["CountryID"];
+                            }
+                            else
+                                ISFound = false;
+
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        ISFound = false;
+
+                    }
+
+                    return ISFound;
                 }
-                else
-                    ISFound = false;
-
-                reader.Close();
             }
-            catch (Exception ex)
-            {
-                ISFound = false;
-
-            }
-            finally
-            {
-                connection.Close();
-            }
-            return ISFound;
         }
-
     }
 }

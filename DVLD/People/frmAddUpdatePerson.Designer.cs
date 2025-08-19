@@ -37,7 +37,6 @@
             this.llRemoveImage = new System.Windows.Forms.LinkLabel();
             this.llSetImage = new System.Windows.Forms.LinkLabel();
             this.label14 = new System.Windows.Forms.Label();
-            this.combCountry = new System.Windows.Forms.ComboBox();
             this.tebEmail = new System.Windows.Forms.TextBox();
             this.label13 = new System.Windows.Forms.Label();
             this.label12 = new System.Windows.Forms.Label();
@@ -74,6 +73,7 @@
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.tebAdress = new System.Windows.Forms.TextBox();
+            this.combCountry = new System.Windows.Forms.ComboBox();
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider1)).BeginInit();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox7)).BeginInit();
@@ -165,16 +165,6 @@
             this.label14.Size = new System.Drawing.Size(70, 20);
             this.label14.TabIndex = 69;
             this.label14.Text = "Adress:";
-            // 
-            // combCountry
-            // 
-            this.combCountry.BackColor = System.Drawing.Color.White;
-            this.combCountry.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
-            this.combCountry.FormattingEnabled = true;
-            this.combCountry.Location = new System.Drawing.Point(521, 257);
-            this.combCountry.Name = "combCountry";
-            this.combCountry.Size = new System.Drawing.Size(153, 27);
-            this.combCountry.TabIndex = 67;
             // 
             // tebEmail
             // 
@@ -528,6 +518,14 @@
             this.tebAdress.TabIndex = 75;
             this.tebAdress.Validating += new System.ComponentModel.CancelEventHandler(this.ValidateEmptyTextBox);
             // 
+            // combCountry
+            // 
+            this.combCountry.FormattingEnabled = true;
+            this.combCountry.Location = new System.Drawing.Point(521, 256);
+            this.combCountry.Name = "combCountry";
+            this.combCountry.Size = new System.Drawing.Size(153, 28);
+            this.combCountry.TabIndex = 76;
+            // 
             // frmAddUpdatePerson
             // 
             this.AcceptButton = this.btSave;
@@ -536,6 +534,7 @@
             this.BackColor = System.Drawing.Color.White;
             this.CancelButton = this.buClose;
             this.ClientSize = new System.Drawing.Size(855, 478);
+            this.Controls.Add(this.combCountry);
             this.Controls.Add(this.tebAdress);
             this.Controls.Add(this.llRemoveImage);
             this.Controls.Add(this.llSetImage);
@@ -543,7 +542,6 @@
             this.Controls.Add(this.btSave);
             this.Controls.Add(this.pictureBox11);
             this.Controls.Add(this.label14);
-            this.Controls.Add(this.combCountry);
             this.Controls.Add(this.pictureBox10);
             this.Controls.Add(this.tebEmail);
             this.Controls.Add(this.label13);
@@ -615,7 +613,6 @@
         private System.Windows.Forms.Button btSave;
         private System.Windows.Forms.PictureBox pictureBox11;
         private System.Windows.Forms.Label label14;
-        private System.Windows.Forms.ComboBox combCountry;
         private System.Windows.Forms.PictureBox pictureBox10;
         private System.Windows.Forms.TextBox tebEmail;
         private System.Windows.Forms.Label label13;
@@ -649,5 +646,6 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.RichTextBox richTextBox1;
         private System.Windows.Forms.TextBox tebAdress;
+        private System.Windows.Forms.ComboBox combCountry;
     }
 }

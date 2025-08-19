@@ -22,21 +22,16 @@ namespace DVLDSluotion.Drivers
         {
             this.Close();
         }
-        DataTable dtAllDriver;
+     
+        List<DriverViewModel>DriverViews = new List<DriverViewModel>();
+         void _RefreshDate()
+        {
+            dgDriver.DataSource = null;
+            dgDriver.DataSource = DriverViews;
 
-        async void RefreshDate()
-        {
-            dtAllDriver = await clsDriver.GetAdllDrivers();
-            dgDriver.DataSource = dtAllDriver;
-            lbRecorde.Text = dgDriver.RowCount.ToString();
-        }
-        private async void frmListDrivers_Load(object sender, EventArgs e)
-        {
-            dtAllDriver =await clsDriver.GetAdllDrivers();
-            dgDriver.DataSource = dtAllDriver;
             lbRecorde.Text = dgDriver.RowCount.ToString();
 
-            if(dgDriver.Rows.Count > 0 )
+            if (dgDriver.Rows.Count > 0)
             {
                 dgDriver.Columns[0].HeaderText = "Driver ID";
                 dgDriver.Columns[0].Width = 120;
@@ -57,7 +52,13 @@ namespace DVLDSluotion.Drivers
                 dgDriver.Columns[5].HeaderText = "Active Licenses";
                 dgDriver.Columns[5].Width = 120;
             }
+        }
+        private async void frmListDrivers_Load(object sender, EventArgs e)
+        {
+            DriverViews = await DriverViewModel.GetAdllDrivers();
+            dgDriver.DataSource = DriverViews;
             cmFilter.SelectedIndex = 0;
+            _RefreshDate();
         }
 
         private void txtValuesFilter_KeyPress(object sender, KeyPressEventArgs e)
@@ -69,45 +70,47 @@ namespace DVLDSluotion.Drivers
         }
 
         private void txtValuesFilter_TextChanged(object sender, EventArgs e)
-        {
-            string ColumnsFliter = "";
+        { 
+            List<DriverViewModel> DataFilter;
 
-            switch(cmFilter.Text)
+            if (txtValuesFilter.Text == "")
             {
-                case "Driver ID":
-                    ColumnsFliter = "DriverID";
-                    break;
-                case "Person ID":
-                    ColumnsFliter = "PersonID";
-                    break;
-                case "National No.":
-                    ColumnsFliter = "NationalNo";
-                    break;
-                case "Full Name":
-                    ColumnsFliter = "FullName";
-                    break;
-                    default:
-                    ColumnsFliter = "None";
-                    break;
-
-
-            }
-
-            if(txtValuesFilter.Text ==    "" || ColumnsFliter == "None")
-            {
-                dtAllDriver.DefaultView.RowFilter = "";
-                RefreshDate();
+                _RefreshDate();
                 return;
             }
 
-            if(ColumnsFliter == "DriverID" || ColumnsFliter == "PersonID")
+            switch (cmFilter.Text)
             {
-                dtAllDriver.DefaultView.RowFilter = string.Format("[{0}] = {1}", ColumnsFliter, txtValuesFilter.Text.Trim());
-                lbRecorde.Text = dgDriver.RowCount.ToString();
+                case "Driver ID":
+                    {
+                        DataFilter = DriverViews.Where(Drivers => Drivers.DriverID == int.Parse(txtValuesFilter.Text)).ToList();
+                        dgDriver.DataSource = DataFilter;
+                        break;
+                    }
+                case "Person ID":
+                    {
+                        DataFilter = DriverViews.Where(Drivers => Drivers.PersonID == int.Parse(txtValuesFilter.Text)).ToList();
+                        dgDriver.DataSource = DataFilter;
+                        break;
+                    }
+                case "National No.":
+                    {
+                        DataFilter = DriverViews.Where(Drivers => Drivers.NationalNo.ToLower().StartsWith(txtValuesFilter.Text.ToLower())).ToList();
+                        dgDriver.DataSource = DataFilter;
+                        break;
+                    }
+                case "Full Name": 
+                    {
+                        DataFilter = DriverViews.Where(Drivers => Drivers.FullName.ToLower().StartsWith(txtValuesFilter.Text.ToLower())).ToList();
+                        dgDriver.DataSource = DataFilter;
+                        break;
+                    }
             }
-            else
-                dtAllDriver.DefaultView.RowFilter = string.Format("[{0}] Like '{1}%'", ColumnsFliter, txtValuesFilter.Text.Trim());
             lbRecorde.Text = dgDriver.RowCount.ToString();
+
+            
+
+            
         }
 
         private void txtValuesFilter_Validating(object sender, CancelEventArgs e)
@@ -135,14 +138,28 @@ namespace DVLDSluotion.Drivers
         {
             int PersonId = (int)dgDriver.CurrentRow.Cells[1].Value;
             frmShowPerson frm = new frmShowPerson(PersonId);
-                frm.ShowDialog();
+            frmAddUpdatePerson.DataBackperconAfertUpdate += DataBackperconAfertUpdate;
+            frm.ShowDialog();
+            _RefreshDate();
+        }
+
+        private void DataBackperconAfertUpdate(object from, clsPerson person)
+        {
+            for (int i = 0;i < DriverViews.Count;i++)
+            {
+              if(DriverViews[i].PersonID == person.PersonID)
+              {
+                    DriverViews[i].FullName = person.FullName;   
+              }
+            }
         }
 
         private void showLicenesHistoryToolStripMenuItem_Click(object sender, EventArgs e)
         {
             int PersonID = (int)dgDriver.CurrentRow.Cells[1].Value;
             frmShowPersonLicenseHistory frm = new frmShowPersonLicenseHistory(PersonID);
-                frm.ShowDialog();
+            frm.ShowDialog();
+            _RefreshDate();
         }
     }
 }

@@ -70,9 +70,9 @@ namespace DVLDSluotion
             lblRecordsCount.Text = dgvLocalDrivingLicenseApplications.Rows.Count.ToString();
         }
 
-        private void frmLastApplicationID_Load(object sender, EventArgs e)
+        private async void frmLastApplicationID_Load(object sender, EventArgs e)
         {
-            _dtAllLocalDrivingLicenseApplications = clsLocalDrivingLicenseApplication.GetAllLocalDrivingLicenseApplication();
+            _dtAllLocalDrivingLicenseApplications =await clsLocalDrivingLicenseApplication.GetAllLocalDrivingLicenseApplication();
             dgvLocalDrivingLicenseApplications.DataSource = _dtAllLocalDrivingLicenseApplications;
 
             lblRecordsCount.Text = dgvLocalDrivingLicenseApplications.Rows.Count.ToString();
@@ -300,6 +300,11 @@ namespace DVLDSluotion
 
             frmShowPersonLicenseHistory frm = new frmShowPersonLicenseHistory(PersonID);
             frm.ShowDialog();
+        }
+
+        private void lblTitle_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

@@ -23,7 +23,8 @@ namespace SLDVLD_Buisness
         public DateTime ExpirationDate { set; get; }
         public bool IsActive { set; get; }
 
-        
+
+
         public clsInternationalLicense()
 
         {
@@ -87,9 +88,9 @@ namespace SLDVLD_Buisness
                 this.IssuedUsingLocalLicenseID,this.IssueDate,this.ExpirationDate,this.IsActive,this.CreatedByUserID);
         }
 
-        public static DataTable GetAllInternationalLicenses()
+        public static async  Task<DataTable> GetAllInternationalLicenses()
         {
-            return clsInternationalLicenseData.GetAllInternationalLicenses();
+            return await clsInternationalLicenseData.GetAllInternationalLicenses();
         }
 
         public static clsInternationalLicense Find(int InternationalLicenseID)
@@ -145,9 +146,6 @@ namespace SLDVLD_Buisness
         {
             return clsInternationalLicenseData.GetActiveInternationalLicenseIDByDriverID(DriverID);
         }
-        public static DataTable GetDriverInternationalLicenses(int DriverID)
-        {
-            return clsInternationalLicenseData.GetDriverInternationalLicenses(DriverID);
-        }
+       
     }
 }
