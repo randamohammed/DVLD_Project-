@@ -5,7 +5,6 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
 namespace SLDVLD_DataAccess
 {
     public class clsDriverInternationalLicensesViewModel
@@ -48,6 +47,7 @@ namespace SLDVLD_DataAccess
                     catch (Exception ex)
                     {
 
+                        ErrorLogger.LogErrorToEventLog($"Error Fnid Driver International Licenses{ex.Message}");
                     }
 
 
@@ -83,6 +83,7 @@ namespace SLDVLD_DataAccess
                         catch (Exception ex)
                         {
 
+                            ErrorLogger.LogErrorToEventLog($"Error Get Driver International Licenses {ex.Message}");
                         }
 
                         return dt;

@@ -34,7 +34,8 @@ namespace SLDVLD_DataAccess
                         }
                         catch (Exception ex)
                         {
-
+    
+                            ErrorLogger.LogErrorToEventLog($"Error Get All Countries {ex.Message}");
                         }
 
                         return dt;
@@ -76,6 +77,7 @@ namespace SLDVLD_DataAccess
                     {
                         ISFound = false;
 
+                        ErrorLogger.LogErrorToEventLog($"Error Find Country By ID {ex.Message}");
                     }
 
                     return ISFound;
@@ -112,6 +114,7 @@ namespace SLDVLD_DataAccess
                     {
                         ISFound = false;
 
+                        ErrorLogger.LogErrorToEventLog($"Error Find Country By Nam {ex.Message}");
                     }
 
                     return ISFound;

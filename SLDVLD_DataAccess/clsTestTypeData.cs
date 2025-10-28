@@ -43,6 +43,8 @@ namespace SLDVLD_DataAccess
                     catch (Exception ex)
                     {
                         Console.WriteLine(ex.ToString());
+
+                        ErrorLogger.LogErrorToEventLog($"Error Get TestType  ByID: {ex.Message}");
                     }
                    
                     return ISFound;
@@ -76,6 +78,8 @@ namespace SLDVLD_DataAccess
                           catch (Exception ex)
                           {
                               Console.WriteLine(ex.Message);
+
+                              ErrorLogger.LogErrorToEventLog($"Error Get All testtype: {ex.Message}");
                           }
 
                           return dt;
@@ -114,6 +118,8 @@ namespace SLDVLD_DataAccess
                     catch (Exception ex)
                     {
                         Console.WriteLine("Error in AddNewtsetType: " + ex.Message);
+
+                        ErrorLogger.LogErrorToEventLog($"Error Add New testtype: {ex.Message}");
                     }
                    
                     return AddRow;
@@ -142,6 +148,8 @@ namespace SLDVLD_DataAccess
                     catch (Exception ex)
                     {
                         Console.WriteLine("Error in UpdateTestType: " + ex.Message);
+
+                        ErrorLogger.LogErrorToEventLog($"Error Update TestType: {ex.Message}");
                     }
                    
                     return RowAffected > 0;

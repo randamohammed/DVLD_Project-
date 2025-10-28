@@ -1,4 +1,5 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
@@ -68,6 +69,8 @@ namespace SLDVLD_DataAccess
                     catch (Exception ex)
                     {
                         ISfound = false;
+
+                        ErrorLogger.LogErrorToEventLog($"Error Get Detained LicenseInfo ByID {ex.Message}");
                     }
 
                     return ISfound;
@@ -139,6 +142,8 @@ namespace SLDVLD_DataAccess
                     catch (Exception ex)
                     {
                         isFound = false;
+
+                        ErrorLogger.LogErrorToEventLog($"Error Get Detained LicenseInfo By LicenseID {ex.Message}");
                     }
 
                     return isFound;
@@ -172,6 +177,7 @@ namespace SLDVLD_DataAccess
                         catch (Exception ex)
                         {
 
+                            ErrorLogger.LogErrorToEventLog($"Error Get All Detained Licenses {ex.Message}");
                         }
 
                         return dt;
@@ -210,6 +216,7 @@ namespace SLDVLD_DataAccess
                     catch (Exception ex)
                     {
 
+                        ErrorLogger.LogErrorToEventLog($"Error Add New Detained License {ex.Message}");
                     }
 
                     return DetainID;
@@ -242,6 +249,7 @@ namespace SLDVLD_DataAccess
                     catch (Exception ex)
                     {
 
+                        ErrorLogger.LogErrorToEventLog($"Error Update Detained License {ex.Message}");
                     }
 
                     return RowAffected > 0;
@@ -275,6 +283,7 @@ namespace SLDVLD_DataAccess
                     catch (Exception ex)
                     {
 
+                        ErrorLogger.LogErrorToEventLog($"Error Release Detained License {ex.Message}");
                     }
 
                     return RowAffected > 0;
@@ -307,6 +316,8 @@ namespace SLDVLD_DataAccess
                     catch (Exception ex)
                     {
                         IsDetained = false;
+
+                        ErrorLogger.LogErrorToEventLog($"Error to check Is License Detained {ex.Message}");
                     }
 
                     return IsDetained;

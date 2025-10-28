@@ -38,6 +38,7 @@ namespace SLDVLD_DataAccess
                     catch (Exception Ex)
                     {
 
+                        ErrorLogger.LogErrorToEventLog($"Error Fnid Driver By PresonID {Ex.Message}");
                     }
 
                     return ISFound;
@@ -71,6 +72,7 @@ namespace SLDVLD_DataAccess
                     catch (Exception Ex)
                     {
 
+                        ErrorLogger.LogErrorToEventLog($"Error Finid DriverID {Ex.Message}");
                     }
 
                     return ISFound;
@@ -107,6 +109,7 @@ namespace SLDVLD_DataAccess
                     catch (Exception Ex)
                     {
 
+                        ErrorLogger.LogErrorToEventLog($"Error Find Driver By ID forDriverView {Ex.Message}");
                     }
 
                     return ISFound;
@@ -138,6 +141,7 @@ namespace SLDVLD_DataAccess
                         catch (Exception Ex)
                         {
 
+                            ErrorLogger.LogErrorToEventLog($"Error Get All Drivers {Ex.Message}");
                         }
                     }
                     return table;
@@ -168,6 +172,7 @@ namespace SLDVLD_DataAccess
                     catch (Exception Ex)
                     {
 
+                        ErrorLogger.LogErrorToEventLog($"Error Update Driver {Ex.Message}");
                     }
 
                     return RowAffeced > 0;
@@ -201,6 +206,7 @@ namespace SLDVLD_DataAccess
                     catch (Exception Ex)
                     {
 
+                        ErrorLogger.LogErrorToEventLog($"Error Add New Driver {Ex.Message}");
                     }
 
                     return DriverID;

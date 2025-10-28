@@ -57,6 +57,7 @@
     <Compile Include="clsTestData.cs" />
     <Compile Include="clsTestTypeData.cs" />
     <Compile Include="clsUserDates.cs" />
+    <Compile Include="ErrorLogger.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

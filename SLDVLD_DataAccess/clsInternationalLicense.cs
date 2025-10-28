@@ -1,4 +1,5 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
@@ -49,6 +50,8 @@ namespace SLDVLD_DataAccess
                     catch (Exception ex)
                     {
                         ISFound = false;
+
+                        ErrorLogger.LogErrorToEventLog($"Error Get International LicenseInfo By ID{ex.Message}");
                     }
 
                     return ISFound;
@@ -78,7 +81,8 @@ namespace SLDVLD_DataAccess
                     catch (Exception ex)
                     {
 
-                    }
+                            ErrorLogger.LogErrorToEventLog($"Error Fnid Driver International Licenses{ex.Message}");
+                        }
 
                     return dt;
 
@@ -121,6 +125,7 @@ namespace SLDVLD_DataAccess
                     catch (Exception ex)
                     {
 
+                        ErrorLogger.LogErrorToEventLog($"Error Add New International License{ex.Message}");
                     }
 
                     return InternationalLicenseID;
@@ -156,6 +161,7 @@ namespace SLDVLD_DataAccess
                     catch (Exception ex)
                     {
 
+                        ErrorLogger.LogErrorToEventLog($"Error Update International License{ex.Message}");
                     }
 
                     return RowAffecteds > 0;
@@ -190,6 +196,7 @@ namespace SLDVLD_DataAccess
                     catch (Exception ex)
                     {
 
+                        ErrorLogger.LogErrorToEventLog($"Error Get Active International LicenseID ByDriverID{ex.Message}");
                     }
 
 

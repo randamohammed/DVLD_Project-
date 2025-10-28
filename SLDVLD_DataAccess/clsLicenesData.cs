@@ -58,6 +58,8 @@ namespace SLDVLD_DataAccess
                     catch (Exception ex)
                     {
                         ISFound = false;
+
+                        ErrorLogger.LogErrorToEventLog($"Error Get LicenseInfoByID: {ex.Message}");
                     }
 
                     return ISFound;
@@ -92,6 +94,7 @@ namespace SLDVLD_DataAccess
                         catch (Exception ex)
                         {
 
+                            ErrorLogger.LogErrorToEventLog($"Error Get All Licenses: {ex.Message}");
                         }
 
 
@@ -130,6 +133,7 @@ namespace SLDVLD_DataAccess
                         catch (Exception ex)
                         {
 
+                            ErrorLogger.LogErrorToEventLog($"Error Get Driver Licenses: {ex.Message}");
                         }
 
                         return dt;
@@ -179,6 +183,8 @@ namespace SLDVLD_DataAccess
                     }
                     catch (Exception ex)
                     {
+
+                        ErrorLogger.LogErrorToEventLog($"Error Add New License  :{ex.Message}");
                     }
 
                     return LicenesID;
@@ -223,6 +229,8 @@ namespace SLDVLD_DataAccess
                     }
                     catch (Exception ex)
                     {
+
+                        ErrorLogger.LogErrorToEventLog($"Error Udate Licenes : {ex.Message}");
                     }
 
                     return RowAffect > 0;
@@ -255,7 +263,7 @@ namespace SLDVLD_DataAccess
 
                     catch (Exception ex)
                     {
-                        //Console.WriteLine("Error: " + ex.Message);
+                        ErrorLogger.LogErrorToEventLog($"Error Get  Active LicenseID  By PersonID{ex.Message}");
 
                     }
 
@@ -289,6 +297,8 @@ namespace SLDVLD_DataAccess
                     }
                     catch (Exception ex)
                     {
+
+                        ErrorLogger.LogErrorToEventLog($"Error Do activate License{ex.Message}");
                     }
                     return RowAffect > 0;
                 }

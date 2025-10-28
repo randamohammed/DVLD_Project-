@@ -42,6 +42,7 @@ namespace SLDVLD_DataAccess
                     catch (Exception ex)
                     {
 
+                        ErrorLogger.LogErrorToEventLog($"Error Get Application TypeIInfo ByID {ex.Message}");
                     }
                     return ISFound;
                 }
@@ -73,6 +74,7 @@ namespace SLDVLD_DataAccess
                         catch (Exception ex)
                         {
 
+                            ErrorLogger.LogErrorToEventLog($"Error Get All ApplicationTypes {ex.Message}");
                         }
 
                         
@@ -105,6 +107,7 @@ namespace SLDVLD_DataAccess
                     catch (Exception ex)
                     {
 
+                        ErrorLogger.LogErrorToEventLog($"Error Add New ApplicationType {ex.Message}");
                     }
 
                     return Add;
@@ -134,6 +137,7 @@ namespace SLDVLD_DataAccess
                     catch (Exception ex)
                     {
 
+                        ErrorLogger.LogErrorToEventLog($"Error Update ApplicationType {ex.Message}");
                     }
 
                     return RowAffected > 0;

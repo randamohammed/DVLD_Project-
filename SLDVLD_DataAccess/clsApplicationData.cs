@@ -49,6 +49,8 @@ namespace SLDVLD_DataAccess
                     catch (Exception ex)
                     {
                         ISFound = false;
+
+                        ErrorLogger.LogErrorToEventLog($"Error Get ApplicationInfo By ID {ex.Message}");
                     }
 
                     return ISFound;
@@ -79,6 +81,7 @@ namespace SLDVLD_DataAccess
                         catch (Exception ex)
                         {
 
+                            ErrorLogger.LogErrorToEventLog($"Error Get All pplications {ex.Message}");
                         }
 
                         return dataTable;
@@ -119,6 +122,7 @@ namespace SLDVLD_DataAccess
                     catch (Exception ex)
                     {
 
+                       ErrorLogger.LogErrorToEventLog($"Error Add New Applications {ex.Message}");
                     }
                     return AddNewRow;
                 }
@@ -154,6 +158,7 @@ namespace SLDVLD_DataAccess
                     catch (Exception ex)
                     {
 
+                        ErrorLogger.LogErrorToEventLog($"Error Update Application {ex.Message}");
                     }
 
                     return RowAffcet > 0;
@@ -179,6 +184,7 @@ namespace SLDVLD_DataAccess
                     catch (Exception Ex)
                     {
 
+                        ErrorLogger.LogErrorToEventLog($"Error Delete Application {Ex.Message}");
                     }
 
                     return RowAffcet > 0;
@@ -213,6 +219,7 @@ namespace SLDVLD_DataAccess
                     catch (Exception Ex)
                     {
 
+                         ErrorLogger.LogErrorToEventLog($"Error in IS Exsit Application Exsit {Ex.Message}");
                     }
 
                     return ISFound;
@@ -246,6 +253,7 @@ namespace SLDVLD_DataAccess
                     catch (Exception Ex)
                     {
 
+                        ErrorLogger.LogErrorToEventLog($"Error Get Active Application ID {Ex.Message}");
                     }
                     return ActiveApplicationID;
                 }
@@ -284,6 +292,7 @@ namespace SLDVLD_DataAccess
                     catch (Exception Ex)
                     {
 
+                        ErrorLogger.LogErrorToEventLog($"Error Get Active Application ID ForLicense Class {Ex.Message}");
                     }
                     return ActiveApplicationID;
                 }
@@ -311,6 +320,7 @@ namespace SLDVLD_DataAccess
                     catch (Exception Ex)
                     {
 
+                        ErrorLogger.LogErrorToEventLog($"Error Update Status{Ex.Message}");
                     }
                     return RowAffect > 0;
                 }

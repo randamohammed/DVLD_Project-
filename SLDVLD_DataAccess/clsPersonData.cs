@@ -55,7 +55,8 @@ namespace SLDVLD_DataAccess
                     }
                     catch (Exception ex)
                     {
-                        Console.WriteLine("Feiled Added Person" + ex.Message);
+
+                        ErrorLogger.LogErrorToEventLog($"Error Feiled Added Person: {ex.Message}");
                     }
 
                     return PresonID;
@@ -109,7 +110,7 @@ namespace SLDVLD_DataAccess
                     }
                     catch (Exception ex)
                     {
-                        Console.WriteLine("Feild Update Peraon"+ex.ToString());
+                        ErrorLogger.LogErrorToEventLog($"Error update: {ex.Message}");
                     }
 
                     return rowffected > 0;
@@ -176,7 +177,7 @@ namespace SLDVLD_DataAccess
                     }
                     catch (Exception ex)
                     {
-                        Console.WriteLine(ex.Message);
+                        ErrorLogger.LogErrorToEventLog($"Error FindPersonByID: {ex.Message}");
 
                     }
                     return ISFound;
@@ -244,7 +245,7 @@ namespace SLDVLD_DataAccess
                     }
                     catch (Exception ex)
                     {
-                        Console.WriteLine(ex.Message);
+                        ErrorLogger.LogErrorToEventLog($"Error Get FindPerson ByID NamGander: {ex.Message}");
 
                     }
                     return ISFound;
@@ -309,7 +310,7 @@ namespace SLDVLD_DataAccess
                     }
                     catch (Exception ex)
                     {
-                        Console.WriteLine("Feiled in SP_FindPersonByNationalNo " + ex.ToString());
+                        ErrorLogger.LogErrorToEventLog($"Error FindPersonBy NationalNo: {ex.Message}");
                     }
 
                     return ISFound;
@@ -341,6 +342,8 @@ namespace SLDVLD_DataAccess
                     catch (Exception ex)
                     {
                         ISFound = false;
+
+                        ErrorLogger.LogErrorToEventLog($"Error Get ISPersonExist: {ex.Message}");
                     }
                     
                     return ISFound;
@@ -373,7 +376,7 @@ namespace SLDVLD_DataAccess
                     catch (Exception ex)
                     {
                         ISFound = false;
-                        Console.WriteLine("person is not Exist");
+                        ErrorLogger.LogErrorToEventLog($"Error Get Is PersonExist: {ex.Message}");
 
                     }
                   
@@ -400,7 +403,8 @@ namespace SLDVLD_DataAccess
                     }
                     catch (Exception ex)
                     {
-                        Console.WriteLine   ("Feild in delete person " +  ex.Message);
+
+                        ErrorLogger.LogErrorToEventLog($"Error Feild in delete person: {ex.Message}");
                     }
                    
                     return reowAffected > 0;
@@ -431,8 +435,9 @@ namespace SLDVLD_DataAccess
                     }
                     catch (Exception ex)
                     {
-                        Console.WriteLine("Feild Get All People " + ex.Message);
-                    }
+
+                            ErrorLogger.LogErrorToEventLog($"Error Feild Get All People: {ex.Message}");
+                        }
 
                     return dataTable;
                 }

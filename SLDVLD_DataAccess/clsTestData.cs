@@ -46,6 +46,9 @@ namespace SLDVLD_DataAccess
                     }
                     catch (Exception ex)
                     {
+
+
+                        ErrorLogger.LogErrorToEventLog($"Error Get TestInfo ByID: {ex.Message}");
                     }
 
                     return ISFound;
@@ -78,6 +81,8 @@ namespace SLDVLD_DataAccess
                         catch (Exception ex)
                         {
 
+
+                            ErrorLogger.LogErrorToEventLog($"Error Get All Tests: {ex.Message}");
                         }
 
                         return dt;
@@ -151,11 +156,11 @@ namespace SLDVLD_DataAccess
             {
                 //Console.WriteLine("Error: " + ex.Message);
                 isFound = false;
+
+
+                ErrorLogger.LogErrorToEventLog($"Error GetLastTest ByPerson: {ex.Message}");
             }
-            finally
-            {
-                connection.Close();
-            }
+
 
             return isFound;
         }
@@ -198,7 +203,9 @@ namespace SLDVLD_DataAccess
                     catch (Exception ex)
                     {
                         Console.WriteLine("Error: " + ex.Message);
- 
+
+
+                        ErrorLogger.LogErrorToEventLog($"Error AddNew Test: {ex.Message}");
                     }
                     return TestID;
                 }
@@ -235,6 +242,8 @@ namespace SLDVLD_DataAccess
                     catch (Exception ex)
                     {
                         Console.WriteLine("Error: " + ex.Message);
+
+                        ErrorLogger.LogErrorToEventLog($"Error UpdateTest: {ex.Message}");
                         return false;
                     }
 
@@ -268,6 +277,8 @@ namespace SLDVLD_DataAccess
                     catch (Exception ex)
                     {
                         Console.WriteLine("Error: " + ex.Message);
+
+                        ErrorLogger.LogErrorToEventLog($"Error Get Passed TestCount: {ex.Message}");
                     }
 
                     return PassedTestCount;

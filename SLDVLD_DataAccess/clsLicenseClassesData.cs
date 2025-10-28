@@ -46,6 +46,8 @@ namespace SLDVLD_DataAccess
                     catch (Exception ex)
                     {
                         ISFound = false;
+
+                        ErrorLogger.LogErrorToEventLog($"Error Get License ClassInfoBy ID: {ex.Message}");
                     }
 
                     return ISFound;
@@ -87,6 +89,8 @@ namespace SLDVLD_DataAccess
                     catch (Exception ex)
                     {
                         ISFound = false;
+
+                        ErrorLogger.LogErrorToEventLog($"Error Get License ClassInfo By ClassName: {ex.Message}");
                     }
 
                     return ISFound;
@@ -117,6 +121,7 @@ namespace SLDVLD_DataAccess
                         catch (Exception ex)
                         {
 
+                            ErrorLogger.LogErrorToEventLog($"Error Get All LicenseClasses: {ex.Message}");
                         }
 
                         return table;
@@ -157,6 +162,7 @@ namespace SLDVLD_DataAccess
                     catch (Exception ex)
                     {
 
+                        ErrorLogger.LogErrorToEventLog($"Error AddNew LicenseClass: {ex.Message}");
                     }
 
                     return AddLicenseClassID;
@@ -192,6 +198,7 @@ namespace SLDVLD_DataAccess
                     catch (Exception ex)
                     {
 
+                        ErrorLogger.LogErrorToEventLog($"Error Update LicenseClass: {ex.Message}");
                     }
                     return RowAffect > 0;
                 }

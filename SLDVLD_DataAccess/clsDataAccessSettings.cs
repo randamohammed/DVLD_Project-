@@ -8,6 +8,7 @@ namespace SLDVLD_DataAccess
 {
     public class clsDataAccessSettings
     {
-        public static string ConntaionString = "Server =. ;Database = DVLD ;User Id = sa;password =123456;";
+        public static string ConntaionString = "Server =. ;Database = DVLD ;Server=.;Integrated Security=True;";
+
     }
 }

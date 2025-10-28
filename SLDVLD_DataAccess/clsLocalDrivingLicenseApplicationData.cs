@@ -43,6 +43,8 @@ namespace SLDVLD_DataAccess
                     catch (Exception ex)
                     {
                         ISFound |= false;
+
+                        ErrorLogger.LogErrorToEventLog($"Error Get local Driver: {ex.Message}");
                     }
 
                     return ISFound;
@@ -80,6 +82,8 @@ namespace SLDVLD_DataAccess
                     catch (Exception ex)
                     {
                         ISFound |= false;
+
+                        ErrorLogger.LogErrorToEventLog($"Error Get LocalDriving  LicenseApplication: {ex.Message}");
                     }
 
                     return ISFound;
@@ -113,6 +117,7 @@ namespace SLDVLD_DataAccess
                         catch (Exception ex)
                         {
 
+                            ErrorLogger.LogErrorToEventLog($"Error AddNew Local DrivingLicenseApplication: {ex.Message}");
                         }
 
                         return dt;
@@ -148,6 +153,7 @@ namespace SLDVLD_DataAccess
                     catch (Exception ex)
                     {
 
+                        ErrorLogger.LogErrorToEventLog($"Error : {ex.Message}");
                     }
 
                     return LocalDrivingLicenseApplications;
@@ -175,6 +181,7 @@ namespace SLDVLD_DataAccess
                     catch (Exception ex)
                     {
 
+                        ErrorLogger.LogErrorToEventLog($"Error Update LocalDriving  License Application: {ex.Message}");
                     }
 
                     return RowAffected > 0;
@@ -202,6 +209,8 @@ namespace SLDVLD_DataAccess
                     }
                     catch (Exception ex)
                     {
+
+                        ErrorLogger.LogErrorToEventLog($"Error Delect: {ex.Message}");
                     }
 
                     return RowAffected > 0;
@@ -234,6 +243,7 @@ namespace SLDVLD_DataAccess
                     catch (Exception ex)
                     {
 
+                        ErrorLogger.LogErrorToEventLog($"Error to check Does Pass TestType: {ex.Message}");
                     }
 
                     return PassTestType > 0;
@@ -265,6 +275,7 @@ namespace SLDVLD_DataAccess
                     catch (Exception ex)
                     {
 
+                        ErrorLogger.LogErrorToEventLog($"Error Get Total TrialsPerTest: {ex.Message}");
                     }
 
                     return TotalTrialsPerTest;
@@ -300,6 +311,7 @@ namespace SLDVLD_DataAccess
                     catch (Exception ex)
                     {
 
+                        ErrorLogger.LogErrorToEventLog($"Error to check Is There AnActiveScheduledTest: {ex.Message}");
                     }
 
                     return Result;
@@ -338,8 +350,8 @@ namespace SLDVLD_DataAccess
 
                     catch (Exception ex)
                     {
-                        //Console.WriteLine("Error: " + ex.Message);
 
+                        ErrorLogger.LogErrorToEventLog($"Error Does At tend TestType: {ex.Message}");
                     }
 
 

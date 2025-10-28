@@ -47,6 +47,8 @@ namespace SLDVLD_DataAccess
                     catch (Exception ex)
                     {
                         Console.WriteLine("Feild to get Info " + ex.ToString());
+
+                        ErrorLogger.LogErrorToEventLog($"Error Get Test AppointmentInfoByID: {ex.Message}");
                     }
 
                     return ISFound;
@@ -82,6 +84,8 @@ namespace SLDVLD_DataAccess
                     catch (Exception ex)
                     {
                         Console.WriteLine("Error: " + ex.Message);
+
+                        ErrorLogger.LogErrorToEventLog($"Error Get All TestAppointments: {ex.Message}");
                     }
 
                     return dt;
@@ -115,6 +119,8 @@ namespace SLDVLD_DataAccess
                         catch (Exception ex)
                         {
                             Console.WriteLine($"Feiled get the Information  {ex.Message}");
+
+                            ErrorLogger.LogErrorToEventLog($"Error Get Application Test: {ex.Message}");
                         }
 
                         return dt;
@@ -155,6 +161,8 @@ namespace SLDVLD_DataAccess
                     }
                     catch (Exception ex)
                     {
+
+                        ErrorLogger.LogErrorToEventLog($"Error Get Last Test Appointment: {ex.Message}");
                     }
 
                     return ISFound;
@@ -197,6 +205,7 @@ namespace SLDVLD_DataAccess
                     catch (Exception ex)
                     {
 
+                        ErrorLogger.LogErrorToEventLog($"Error AddNew Test Appointment: {ex.Message}");
                     }
 
                     return TestAppointmentID;
@@ -240,6 +249,8 @@ namespace SLDVLD_DataAccess
                     catch (Exception ex)
                     {
                         Console.WriteLine("feiled not update " + ex.ToString());
+
+                        ErrorLogger.LogErrorToEventLog($"Error Update Test Appointment: {ex.Message}");
                     }
                     return RowAffect > 0;
                 }
@@ -270,6 +281,8 @@ namespace SLDVLD_DataAccess
                     }
                     catch (Exception ex)
                     {
+
+                        ErrorLogger.LogErrorToEventLog($"Error Get TestID: {ex.Message}");
                     }
 
                     return TestID;
